@@ -505,7 +505,11 @@ export default async function EquipmentPage({
         </div>
         <div className="footer-bottom">
           <span>© 2026 · Ростов-на-Дону · Работаем по России</span>
-          <a href="/">НА ГЛАВНУЮ ↑</a>
+          <div className="footer-links">
+            <a href="/privacy">Политика конфиденциальности</a>
+            <a href="/terms">Пользовательское соглашение</a>
+            <a href="/">НА ГЛАВНУЮ ↑</a>
+          </div>
         </div>
       </footer>
     </main>

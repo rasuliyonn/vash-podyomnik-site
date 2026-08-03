@@ -250,7 +250,11 @@ export default async function Home() {
         </div>
         <div className="footer-bottom">
           <span>{c.footer.copyright}</span>
-          <a href="#top">НАВЕРХ ↑</a>
+          <div className="footer-links">
+            <a href="/privacy">Политика конфиденциальности</a>
+            <a href="/terms">Пользовательское соглашение</a>
+            <a href="#top">НАВЕРХ ↑</a>
+          </div>
         </div>
       </footer>
     </main>
