@@ -1492,6 +1492,22 @@ footer h2 {
     padding-inline: 12px;
   }
 
+  .calculator,
+  .section,
+  .guarantees,
+  .faq-section,
+  footer {
+    padding-inline: 16px;
+  }
+
+  .calculator-form {
+    padding: 18px;
+  }
+
+  .platform-inputs {
+    grid-template-columns: 1fr;
+  }
+
   .brand {
     gap: 8px;
   }
