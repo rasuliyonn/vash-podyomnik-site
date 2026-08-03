@@ -1,11 +1,10 @@
 import { cookies } from "next/headers";
-import { env } from "cloudflare:workers";
 
 const COOKIE_NAME = "admin_session";
 const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 
 function getSecret(): string {
-  return (env as Record<string, string>).ADMIN_SECRET ?? "dev-secret-change-me-in-prod";
+  return process.env.ADMIN_SECRET ?? "dev-secret-change-me-in-prod";
 }
 
 async function hmac(message: string, secret: string): Promise<string> {
@@ -46,7 +45,7 @@ export async function checkAdminPassword(password: string): Promise<boolean> {
     // DB not available — fall through to env check
   }
   // Fall back to env ADMIN_PASSWORD or default "admin"
-  const stored = (env as Record<string, string>).ADMIN_PASSWORD ?? "admin";
+  const stored = process.env.ADMIN_PASSWORD ?? "admin";
   return password === stored;
 }
 
