@@ -1,13 +1,11 @@
-import { env } from "cloudflare:workers";
-import { drizzle } from "drizzle-orm/d1";
+import { createClient } from "@libsql/client";
+import { drizzle } from "drizzle-orm/libsql";
 import * as schema from "./schema";
 
-export function getDb() {
-  if (!env.DB) {
-    throw new Error(
-      "Cloudflare D1 binding `DB` не настроен. Запустите start.sh для локальной разработки или настройте D1 binding в wrangler.toml для деплоя."
-    );
-  }
+const client = createClient({ url: "file:./db.sqlite" });
 
-  return drizzle(env.DB, { schema });
+export const db = drizzle(client, { schema });
+
+export function getDb() {
+  return db;
 }
