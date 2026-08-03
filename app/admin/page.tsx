@@ -19,6 +19,7 @@ export default async function AdminDashboard() {
 
       <nav className="admin-nav">
         <a href="/admin/equipment">Оборудование</a>
+        <a href="/admin/works">Наши работы</a>
         <a href="/admin/submissions">Заявки</a>
         <a href="/admin/content">Контент</a>
         <a href="/" target="_blank" rel="noopener">Сайт ↗</a>
@@ -36,6 +37,11 @@ export default async function AdminDashboard() {
             <span className="admin-card-icon">📬</span>
             <h2>Заявки</h2>
             <p>Просмотр и обработка входящих заявок на расчёт</p>
+          </a>
+          <a href="/admin/works" className="admin-card">
+            <span className="admin-card-icon">🖼</span>
+            <h2>Наши работы</h2>
+            <p>Управление галереей выполненных объектов (добавление, удаление, порядок)</p>
           </a>
           <a href="/admin/content" className="admin-card">
             <span className="admin-card-icon">✏️</span>

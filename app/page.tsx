@@ -1,9 +1,26 @@
+import { asc } from "drizzle-orm";
+import { getDb } from "../db";
+import { worksImages } from "../db/schema";
 import { getSiteContent } from "../lib/site-content";
 import { Calculator } from "./components/calculator";
 import { FaqSection } from "./components/faq-section";
+import { WorksGallery } from "./components/works-gallery";
+
+async function getWorksImages(): Promise<string[]> {
+  try {
+    const db = getDb();
+    const rows = await db
+      .select({ url: worksImages.url })
+      .from(worksImages)
+      .orderBy(asc(worksImages.sortOrder), asc(worksImages.id));
+    return rows.map((r) => r.url);
+  } catch {
+    return [];
+  }
+}
 
 export default async function Home() {
-  const c = await getSiteContent();
+  const [c, worksUrls] = await Promise.all([getSiteContent(), getWorksImages()]);
 
   return (
     <main>
@@ -22,6 +39,7 @@ export default async function Home() {
         <nav aria-label="Основная навигация">
           <a href="#equipment">Оборудование</a>
           <a href="#process">Этапы</a>
+          <a href="#works">Наши работы</a>
           <a href="#guarantees">Гарантии</a>
         </nav>
         <a className="header-cta" href="#calculation">
@@ -29,6 +47,14 @@ export default async function Home() {
           <span aria-hidden="true">↗</span>
         </a>
       </header>
+
+      <nav className="mobile-bottom-nav" aria-label="Мобильная навигация">
+        <a href="#equipment">Оборудование</a>
+        <a href="#process">Этапы</a>
+        <a href="#works">Наши работы</a>
+        <a href="#guarantees">Гарантии</a>
+        <a href="#calculation" className="mobile-nav-cta">{c.header.ctaText}</a>
+      </nav>
 
       <section
         className="hero"
@@ -46,7 +72,7 @@ export default async function Home() {
           <h1>
             {c.hero.h1}
             <br />
-            подъёмники <em>{c.hero.h1em}</em>
+            {" "}подъёмники <em>{c.hero.h1em}</em>
           </h1>
           <p className="hero-lead">{c.hero.lead}</p>
           <div className="hero-actions">
@@ -195,9 +221,25 @@ export default async function Home() {
         </div>
       </section>
 
+      <section className="section works" id="works">
+        <div className="works-heading">
+          <div className="works-heading-left">
+            <span className="section-index">/ 04</span>
+            <p>ПОРТФОЛИО</p>
+            <h2>Наши <em>работы</em></h2>
+          </div>
+          <div className="works-heading-right">
+            <span className="works-count">71</span>
+            <span className="works-count-label">выполненных<br />объектов</span>
+            <span className="works-scroll-hint">прокрутите →</span>
+          </div>
+        </div>
+        <WorksGallery images={worksUrls} />
+      </section>
+
       <section className="guarantees" id="guarantees">
         <div className="guarantee-title">
-          <span className="section-index">/ 04</span>
+          <span className="section-index">/ 05</span>
           <p>ПОЧЕМУ НАМ ДОВЕРЯЮТ</p>
           <h2>
             {c.guarantees.heading}

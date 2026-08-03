@@ -1,20 +1,26 @@
 "use client";
 
 import { FormEvent, useMemo, useState } from "react";
+import Link from "next/link";
 import type { CalculatorContent } from "../../lib/default-content";
 
 export function Calculator({ content }: { content: CalculatorContent }) {
   const [lift, setLift] = useState(content.liftTypes[0] ?? "Грузовой подъёмник");
   const [capacity, setCapacity] = useState(content.capacities[1] ?? "до 500 кг");
   const [height, setHeight] = useState("");
-  const [platformSize, setPlatformSize] = useState("");
+  const [platformWidth, setPlatformWidth] = useState("");
+  const [platformDepth, setPlatformDepth] = useState("");
   const [floors, setFloors] = useState(content.stops[0] ?? "2 остановки");
   const [location, setLocation] = useState("");
   const [copied, setCopied] = useState(false);
+  const [consentData, setConsentData] = useState(false);
+  const [consentNews, setConsentNews] = useState(false);
+
+  const platformSize = [platformWidth && `${platformWidth} мм`, platformDepth && `${platformDepth} мм`].filter(Boolean).join(" × ");
 
   const requestText = useMemo(() => {
     const parts = [lift, capacity];
-    if (height) parts.push(`высота ${height}`);
+    if (height) parts.push(`высота подъёма ${height} мм`);
     if (platformSize) parts.push(`платформа ${platformSize}`);
     parts.push(floors);
     if (location) parts.push(`объект: ${location}`);
@@ -32,6 +38,8 @@ export function Calculator({ content }: { content: CalculatorContent }) {
         capacity,
         height,
         platformSize,
+        platformWidth,
+        platformDepth,
         city: location,
         stops: floors,
       }),
@@ -80,18 +88,33 @@ export function Calculator({ content }: { content: CalculatorContent }) {
         <div className="form-row">
           <label>
             <span>03 · ВЫСОТА ПОДЪЁМА</span>
-            <select value={height} onChange={(e) => setHeight(e.target.value)}>
-              <option value="">Не знаю / уточним</option>
-              {content.heights.map((h) => <option key={h}>{h}</option>)}
-            </select>
+            <input
+              type="number"
+              value={height}
+              onChange={(e) => setHeight(e.target.value)}
+              placeholder="Высота в мм, напр. 3000"
+              min={0}
+            />
           </label>
 
           <label>
             <span>04 · ГАБАРИТЫ ПЛАТФОРМЫ</span>
-            <select value={platformSize} onChange={(e) => setPlatformSize(e.target.value)}>
-              <option value="">Не знаю / уточним</option>
-              {content.platforms.map((p) => <option key={p}>{p}</option>)}
-            </select>
+            <div className="platform-inputs">
+              <input
+                type="number"
+                value={platformWidth}
+                onChange={(e) => setPlatformWidth(e.target.value)}
+                placeholder="Ширина, мм"
+                min={0}
+              />
+              <input
+                type="number"
+                value={platformDepth}
+                onChange={(e) => setPlatformDepth(e.target.value)}
+                placeholder="Глубина, мм"
+                min={0}
+              />
+            </div>
           </label>
         </div>
 
@@ -115,6 +138,32 @@ export function Calculator({ content }: { content: CalculatorContent }) {
           <small>ВАША ЗАЯВКА</small>
           <p>{requestText}</p>
         </div>
+
+        <div className="form-consents">
+          <label className="consent-label">
+            <input
+              type="checkbox"
+              checked={consentData}
+              onChange={(e) => setConsentData(e.target.checked)}
+              required
+            />
+            <span>
+              Я согласен(-на) на обработку моих персональных данных в соответствии с{" "}
+              <Link href="/privacy" target="_blank">Политикой по обработке и защиты персональных данных</Link>
+            </span>
+          </label>
+          <label className="consent-label">
+            <input
+              type="checkbox"
+              checked={consentNews}
+              onChange={(e) => setConsentNews(e.target.checked)}
+            />
+            <span>
+              Я согласен(-на) на получение новостных рассылок, рассылок рекламного, информационного характера
+            </span>
+          </label>
+        </div>
+
         <button className="primary-button form-button" type="submit">
           {copied ? content.copiedText : content.buttonText}
           <span aria-hidden="true">{copied ? "✓" : "→"}</span>

@@ -51,3 +51,12 @@ export const siteContent = sqliteTable("site_content", {
   value: text("value").notNull().default("{}"),
   updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
+
+export const worksImages = sqliteTable("works_images", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  url: text("url").notNull(),
+  imageData: text("image_data"), // base64 data URL for DB-stored uploads
+  caption: text("caption").notNull().default(""),
+  sortOrder: integer("sort_order").notNull().default(0),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
