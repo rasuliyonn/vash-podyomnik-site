@@ -1,6 +1,7 @@
 import { requireAdmin } from "../../../lib/admin-auth";
 import { LogoutButton } from "../logout-button";
 import { SettingsForm } from "./settings-form";
+import { MaxBotSettingsForm } from "./max-bot-form";
 
 export default async function AdminSettingsPage() {
   await requireAdmin();
@@ -30,6 +31,7 @@ export default async function AdminSettingsPage() {
       <main className="admin-main">
         <h1>Настройки</h1>
         <SettingsForm />
+        <MaxBotSettingsForm />
       </main>
     </div>
   );

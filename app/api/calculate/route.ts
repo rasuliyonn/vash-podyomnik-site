@@ -1,5 +1,6 @@
 import { getDb } from "../../../db";
 import { formSubmissions } from "../../../db/schema";
+import { getMaxBotSettings, sendMaxMessage, formatSubmissionMessage } from "../../../lib/max-bot";
 
 export async function POST(request: Request) {
   try {
@@ -28,6 +29,17 @@ export async function POST(request: Request) {
       .insert(formSubmissions)
       .values({ liftType, capacity, height, platformSize, city, stops })
       .returning();
+
+    // Forward the submission to the MAX messenger bot if configured.
+    try {
+      const settings = await getMaxBotSettings();
+      if (settings.enabled) {
+        const result = await sendMaxMessage(settings, formatSubmissionMessage(row));
+        if (!result.ok) console.error("[max-bot]", result.error);
+      }
+    } catch (error) {
+      console.error("[max-bot]", error);
+    }
 
     return Response.json({ ok: true, id: row.id }, { status: 201 });
   } catch (error) {
