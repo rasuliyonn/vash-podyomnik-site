@@ -2,46 +2,43 @@ import { eq } from "drizzle-orm";
 import { getDb } from "../db";
 import { siteContent } from "../db/schema";
 
-const MAX_BOT_SETTINGS_KEY = "max_bot_settings";
-// Overridable so the API can be reached through a proxy/relay if needed.
-const MAX_API_BASE = process.env.MAX_API_BASE ?? "https://platform-api2.max.ru";
+const TELEGRAM_BOT_SETTINGS_KEY = "telegram_bot_settings";
+const TELEGRAM_API_BASE = "https://api.telegram.org";
 
-export type MaxBotSettings = {
+export type TelegramBotSettings = {
   enabled: boolean;
   token: string;
-  userId: string;
   chatId: string;
 };
 
-const DEFAULT_SETTINGS: MaxBotSettings = {
+const DEFAULT_SETTINGS: TelegramBotSettings = {
   enabled: false,
   token: "",
-  userId: "",
   chatId: "",
 };
 
-export async function getMaxBotSettings(): Promise<MaxBotSettings> {
+export async function getTelegramBotSettings(): Promise<TelegramBotSettings> {
   try {
     const db = getDb();
     const rows = await db
       .select()
       .from(siteContent)
-      .where(eq(siteContent.key, MAX_BOT_SETTINGS_KEY))
+      .where(eq(siteContent.key, TELEGRAM_BOT_SETTINGS_KEY))
       .limit(1);
     if (rows.length === 0) return { ...DEFAULT_SETTINGS };
-    const parsed = JSON.parse(rows[0].value) as Partial<MaxBotSettings>;
+    const parsed = JSON.parse(rows[0].value) as Partial<TelegramBotSettings>;
     return { ...DEFAULT_SETTINGS, ...parsed };
   } catch {
     return { ...DEFAULT_SETTINGS };
   }
 }
 
-export async function saveMaxBotSettings(settings: MaxBotSettings): Promise<void> {
+export async function saveTelegramBotSettings(settings: TelegramBotSettings): Promise<void> {
   const db = getDb();
   await db
     .insert(siteContent)
     .values({
-      key: MAX_BOT_SETTINGS_KEY,
+      key: TELEGRAM_BOT_SETTINGS_KEY,
       value: JSON.stringify(settings),
       updatedAt: new Date().toISOString(),
     })
@@ -52,42 +49,40 @@ export async function saveMaxBotSettings(settings: MaxBotSettings): Promise<void
 }
 
 /**
- * Sends a text message to the MAX bot recipient.
- * Auth: token is passed in the `Authorization` header (no "Bearer" prefix),
- * recipient via `user_id` (personal dialog) or `chat_id` (group/channel).
+ * Sends a text message via the Telegram Bot API.
+ *
+ * Auth: the token (format `<bot_id>:<auth_hash>`) is embedded in the API URL.
+ * Recipient is a `chat_id` — a numeric user/group id (e.g. `123456789`) or a
+ * channel username (`@my_channel`).
  */
-export async function sendMaxMessage(
-  settings: Pick<MaxBotSettings, "token" | "userId" | "chatId">,
+export async function sendTelegramMessage(
+  settings: Pick<TelegramBotSettings, "token" | "chatId">,
   text: string,
 ): Promise<{ ok: boolean; error?: string }> {
   const token = settings.token.trim();
-  const userId = settings.userId.trim();
   const chatId = settings.chatId.trim();
 
   if (!token) return { ok: false, error: "Не задан токен бота" };
-
-  const query = new URLSearchParams();
-  if (userId) {
-    query.set("user_id", userId);
-  } else if (chatId) {
-    query.set("chat_id", chatId);
-  } else {
-    return { ok: false, error: "Не задан user_id (личный диалог) или chat_id (чат/канал)" };
-  }
+  if (!chatId) return { ok: false, error: "Не задан chat_id получателя" };
 
   try {
-    const res = await fetch(`${MAX_API_BASE}/messages?${query.toString()}`, {
+    const res = await fetch(`${TELEGRAM_API_BASE}/bot${token}/sendMessage`, {
       method: "POST",
-      headers: {
-        Authorization: token,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ text }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: chatId, text }),
       signal: AbortSignal.timeout(8000),
     });
     if (!res.ok) {
       const body = await res.text().catch(() => "");
-      return { ok: false, error: `MAX API ответил ${res.status}: ${body.slice(0, 200)}` };
+      let detail = body.slice(0, 200);
+      // Telegram returns a JSON body with a human-readable `description`
+      try {
+        const json = JSON.parse(body) as { description?: string };
+        if (json.description) detail = json.description;
+      } catch {
+        // keep raw body
+      }
+      return { ok: false, error: `Telegram API ответил ${res.status}: ${detail}` };
     }
     return { ok: true };
   } catch (e) {

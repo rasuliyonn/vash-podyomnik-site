@@ -2,9 +2,9 @@
 
 import { FormEvent, useEffect, useState } from "react";
 
-type Settings = { enabled: boolean; token: string; userId: string; chatId: string };
+type Settings = { enabled: boolean; token: string; chatId: string };
 
-const EMPTY: Settings = { enabled: false, token: "", userId: "", chatId: "" };
+const EMPTY: Settings = { enabled: false, token: "", chatId: "" };
 
 function StatusText({ status, okText }: { status: string; okText: string }) {
   if (status === "idle" || status === "saving" || status === "sending") return null;
@@ -12,14 +12,14 @@ function StatusText({ status, okText }: { status: string; okText: string }) {
   return <p className="admin-error" style={{ margin: 0 }}>{status}</p>;
 }
 
-export function MaxBotSettingsForm() {
+export function TelegramBotSettingsForm() {
   const [settings, setSettings] = useState<Settings>(EMPTY);
   const [loaded, setLoaded] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "ok" | string>("idle");
   const [testStatus, setTestStatus] = useState<"idle" | "sending" | "ok" | string>("idle");
 
   useEffect(() => {
-    fetch("/api/admin/max-bot")
+    fetch("/api/admin/telegram-bot")
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data?.settings) setSettings({ ...EMPTY, ...data.settings });
@@ -36,7 +36,7 @@ export function MaxBotSettingsForm() {
     e.preventDefault();
     setSaveStatus("saving");
     try {
-      const res = await fetch("/api/admin/max-bot", {
+      const res = await fetch("/api/admin/telegram-bot", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(settings),
@@ -52,7 +52,7 @@ export function MaxBotSettingsForm() {
   async function handleTest() {
     setTestStatus("sending");
     try {
-      const res = await fetch("/api/admin/max-bot", {
+      const res = await fetch("/api/admin/telegram-bot", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ settings }),
@@ -67,10 +67,9 @@ export function MaxBotSettingsForm() {
 
   return (
     <form className="admin-form" onSubmit={handleSave} style={{ maxWidth: 480, marginTop: 36 }}>
-      <h2>Уведомления в мессенджер MAX</h2>
+      <h2>Уведомления в Telegram</h2>
       <p className="admin-hint" style={{ margin: 0 }}>
-        Новые заявки с формы расчёта будут автоматически отправляться в диалог вашего бота в
-        мессенджере MAX.
+        Новые заявки с формы расчёта будут автоматически отправляться в ваш чат с ботом.
       </p>
 
       <label className="admin-label admin-checkbox">
@@ -79,47 +78,37 @@ export function MaxBotSettingsForm() {
           checked={settings.enabled}
           onChange={(e) => set("enabled", e.target.checked)}
         />
-        <span>Отправлять заявки в MAX</span>
+        <span>Отправлять заявки в Telegram</span>
       </label>
 
       <label className="admin-label">
-        <span>Токен бота (access token)</span>
+        <span>Токен бота (от @BotFather)</span>
         <input
           type="password"
           value={settings.token}
           onChange={(e) => set("token", e.target.value)}
           autoComplete="off"
-          placeholder="Токен из @MasterBot или dev.max.ru"
+          placeholder="1234567890:AAExampleToken"
         />
-        <small>Получите токен у системного помощника @MasterBot в MAX или в кабинете dev.max.ru</small>
+        <small>Создайте бота у @BotFather в Telegram и скопируйте его токен сюда</small>
       </label>
 
       <label className="admin-label">
-        <span>user_id — личный диалог с ботом</span>
+        <span>chat_id — кому отправлять заявки</span>
         <input
           type="text"
-          inputMode="numeric"
-          value={settings.userId}
-          onChange={(e) => set("userId", e.target.value)}
-          placeholder="Числовой ID пользователя"
-        />
-        <small>Заполните, чтобы заявки приходили в ваш личный диалог с ботом</small>
-      </label>
-
-      <label className="admin-label">
-        <span>chat_id — чат или канал</span>
-        <input
-          type="text"
-          inputMode="numeric"
           value={settings.chatId}
           onChange={(e) => set("chatId", e.target.value)}
-          placeholder="Числовой ID чата/канала"
+          placeholder="Числовой ID или @username канала"
         />
-        <small>Альтернатива user_id — для группового чата или канала</small>
+        <small>
+          Напишите боту любое сообщение, затем откройте https://api.telegram.org/bot&lt;токен&gt;/getUpdates —
+          ID чата будет в поле chat.id. Либо укажите @username вашего канала.
+        </small>
       </label>
 
       <StatusText status={saveStatus} okText="✓ Настройки сохранены" />
-      <StatusText status={testStatus} okText="✓ Тестовое сообщение отправлено — проверьте диалог с ботом" />
+      <StatusText status={testStatus} okText="✓ Тестовое сообщение отправлено — проверьте чат с ботом" />
 
       <div className="admin-form-actions">
         <button type="submit" className="primary-button" disabled={!loaded || saveStatus === "saving"}>
