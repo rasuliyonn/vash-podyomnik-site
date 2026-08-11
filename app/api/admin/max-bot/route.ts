@@ -1,10 +1,10 @@
 import { getAdminSession } from "../../../../lib/admin-auth";
 import {
-  getTelegramBotSettings,
-  saveTelegramBotSettings,
-  sendTelegramMessage,
-  type TelegramBotSettings,
-} from "../../../../lib/telegram-bot";
+  getMaxBotSettings,
+  saveMaxBotSettings,
+  sendMaxMessage,
+  type MaxBotSettings,
+} from "../../../../lib/max-bot";
 
 async function guardAdmin() {
   const ok = await getAdminSession();
@@ -12,13 +12,11 @@ async function guardAdmin() {
   return null;
 }
 
-function mergeSettings(
-  body: Partial<TelegramBotSettings>,
-  current: TelegramBotSettings,
-): TelegramBotSettings {
+function mergeSettings(body: Partial<MaxBotSettings>, current: MaxBotSettings): MaxBotSettings {
   return {
     enabled: typeof body.enabled === "boolean" ? body.enabled : current.enabled,
     token: (body.token ?? current.token).trim(),
+    userId: (body.userId ?? current.userId).trim(),
     chatId: (body.chatId ?? current.chatId).trim(),
   };
 }
@@ -27,7 +25,7 @@ export async function GET() {
   const denied = await guardAdmin();
   if (denied) return denied;
 
-  const settings = await getTelegramBotSettings();
+  const settings = await getMaxBotSettings();
   return Response.json({ settings });
 }
 
@@ -36,10 +34,10 @@ export async function PUT(request: Request) {
   if (denied) return denied;
 
   try {
-    const body = (await request.json()) as Partial<TelegramBotSettings>;
-    const current = await getTelegramBotSettings();
+    const body = (await request.json()) as Partial<MaxBotSettings>;
+    const current = await getMaxBotSettings();
     const next = mergeSettings(body, current);
-    await saveTelegramBotSettings(next);
+    await saveMaxBotSettings(next);
     return Response.json({ ok: true, settings: next });
   } catch (error) {
     return Response.json({ error: String(error) }, { status: 500 });
@@ -52,12 +50,12 @@ export async function POST(request: Request) {
   if (denied) return denied;
 
   try {
-    const body = (await request.json()) as { settings?: Partial<TelegramBotSettings> };
-    const current = await getTelegramBotSettings();
+    const body = (await request.json()) as { settings?: Partial<MaxBotSettings> };
+    const current = await getMaxBotSettings();
     const settings = mergeSettings(body.settings ?? {}, current);
-    const result = await sendTelegramMessage(
+    const result = await sendMaxMessage(
       settings,
-      "✅ Тестовое сообщение. Сайт успешно подключён к Telegram-боту.",
+      "✅ Тестовое сообщение. Сайт успешно подключён к мессенджеру MAX.",
     );
     if (!result.ok) return Response.json({ error: result.error }, { status: 400 });
     return Response.json({ ok: true });

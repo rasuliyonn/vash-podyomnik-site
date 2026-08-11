@@ -1,6 +1,6 @@
 import { getDb } from "../../../db";
 import { formSubmissions } from "../../../db/schema";
-import { getTelegramBotSettings, sendTelegramMessage, formatSubmissionMessage } from "../../../lib/telegram-bot";
+import { getMaxBotSettings, sendMaxMessage, formatSubmissionMessage } from "../../../lib/max-bot";
 
 export async function POST(request: Request) {
   try {
@@ -39,15 +39,15 @@ export async function POST(request: Request) {
       .values({ name, phone, email, liftType, capacity, height, platformSize, city, stops })
       .returning();
 
-    // Forward the submission to the Telegram bot if configured.
+    // Forward the submission to the MAX messenger bot if configured.
     try {
-      const settings = await getTelegramBotSettings();
+      const settings = await getMaxBotSettings();
       if (settings.enabled) {
-        const result = await sendTelegramMessage(settings, formatSubmissionMessage(row));
-        if (!result.ok) console.error("[telegram-bot]", result.error);
+        const result = await sendMaxMessage(settings, formatSubmissionMessage(row));
+        if (!result.ok) console.error("[max-bot]", result.error);
       }
     } catch (error) {
-      console.error("[telegram-bot]", error);
+      console.error("[max-bot]", error);
     }
 
     return Response.json({ ok: true, id: row.id }, { status: 201 });
