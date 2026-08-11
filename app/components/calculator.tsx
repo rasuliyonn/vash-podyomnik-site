@@ -12,6 +12,9 @@ export function Calculator({ content }: { content: CalculatorContent }) {
   const [platformDepth, setPlatformDepth] = useState("");
   const [floors, setFloors] = useState(content.stops[0] ?? "2 остановки");
   const [location, setLocation] = useState("");
+  const [contactName, setContactName] = useState("");
+  const [contactPhone, setContactPhone] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
   const [copied, setCopied] = useState(false);
   const [consentData, setConsentData] = useState(false);
   const [consentNews, setConsentNews] = useState(false);
@@ -24,8 +27,13 @@ export function Calculator({ content }: { content: CalculatorContent }) {
     if (platformSize) parts.push(`платформа ${platformSize}`);
     parts.push(floors);
     if (location) parts.push(`объект: ${location}`);
-    return `Заявка на расчёт: ${parts.join(", ")}. Нужна консультация инженера и предварительная стоимость.`;
-  }, [lift, capacity, height, platformSize, floors, location]);
+    const contactParts = [];
+    if (contactName) contactParts.push(contactName);
+    if (contactPhone) contactParts.push(contactPhone);
+    if (contactEmail) contactParts.push(contactEmail);
+    const contact = contactParts.length ? ` Контакт: ${contactParts.join(", ")}.` : "";
+    return `Заявка на расчёт: ${parts.join(", ")}.${contact} Нужна консультация инженера и предварительная стоимость.`;
+  }, [lift, capacity, height, platformSize, floors, location, contactName, contactPhone, contactEmail]);
 
   async function handleRequest(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -34,6 +42,9 @@ export function Calculator({ content }: { content: CalculatorContent }) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
+        name: contactName,
+        phone: contactPhone,
+        email: contactEmail,
         liftType: lift,
         capacity,
         height,
@@ -132,6 +143,42 @@ export function Calculator({ content }: { content: CalculatorContent }) {
           <select value={floors} onChange={(e) => setFloors(e.target.value)}>
             {content.stops.map((s) => <option key={s}>{s}</option>)}
           </select>
+        </label>
+
+        <div className="form-row">
+          <label>
+            <span>07 · ВАШЕ ИМЯ</span>
+            <input
+              type="text"
+              value={contactName}
+              onChange={(e) => setContactName(e.target.value)}
+              placeholder="Например: Иван"
+              autoComplete="name"
+            />
+          </label>
+
+          <label>
+            <span>08 · ТЕЛЕФОН *</span>
+            <input
+              type="tel"
+              value={contactPhone}
+              onChange={(e) => setContactPhone(e.target.value)}
+              placeholder="+7 ___ ___-__-__"
+              autoComplete="tel"
+              required
+            />
+          </label>
+        </div>
+
+        <label>
+          <span>09 · EMAIL (ОПЦИОНАЛЬНО)</span>
+          <input
+            type="email"
+            value={contactEmail}
+            onChange={(e) => setContactEmail(e.target.value)}
+            placeholder="name@example.com"
+            autoComplete="email"
+          />
         </label>
 
         <div className="request-preview">

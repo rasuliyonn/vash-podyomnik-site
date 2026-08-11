@@ -2,6 +2,7 @@ import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Gallery } from "./gallery-client";
+import { SITE_URL, CONTACT_EMAIL } from "../../../lib/site-config";
 
 // ─── static fallback data ────────────────────────────────────────────────────
 
@@ -248,6 +249,9 @@ export async function generateMetadata({
   return {
     title,
     description: staticData?.description?.slice(0, 160),
+    alternates: {
+      canonical: `/equipment/${slug}`,
+    },
   };
 }
 
@@ -308,6 +312,36 @@ export default async function EquipmentPage({
         <span aria-hidden="true">›</span>
         <span aria-current="page">{title}</span>
       </nav>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              {
+                "@type": "ListItem",
+                position: 1,
+                name: "Главная",
+                item: SITE_URL,
+              },
+              {
+                "@type": "ListItem",
+                position: 2,
+                name: "Оборудование",
+                item: `${SITE_URL}/#equipment`,
+              },
+              {
+                "@type": "ListItem",
+                position: 3,
+                name: title,
+                item: `${SITE_URL}/equipment/${slug}`,
+              },
+            ],
+          }),
+        }}
+      />
 
       {/* ── hero ── */}
       <section className="eq-hero">
@@ -508,6 +542,7 @@ export default async function EquipmentPage({
           <div className="footer-links">
             <a href="/privacy">Политика конфиденциальности</a>
             <a href="/terms">Пользовательское соглашение</a>
+            <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
             <a href="/">НА ГЛАВНУЮ ↑</a>
           </div>
         </div>

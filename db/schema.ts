@@ -36,6 +36,9 @@ export const equipmentDocuments = sqliteTable("equipment_documents", {
 
 export const formSubmissions = sqliteTable("form_submissions", {
   id: integer("id").primaryKey({ autoIncrement: true }),
+  name: text("name").notNull().default(""),
+  phone: text("phone").notNull().default(""),
+  email: text("email").notNull().default(""),
   liftType: text("lift_type").notNull(),
   capacity: text("capacity").notNull(),
   height: text("height").notNull().default(""),

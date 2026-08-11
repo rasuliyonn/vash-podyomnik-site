@@ -4,6 +4,9 @@ export const metadata: Metadata = {
   title: "Политика обработки персональных данных",
   description:
     "Политика обработки персональных данных ООО «Ваш Подъёмник» в соответствии с Федеральным законом № 152-ФЗ «О персональных данных».",
+  alternates: {
+    canonical: "/privacy",
+  },
 };
 
 export default function PrivacyPage() {

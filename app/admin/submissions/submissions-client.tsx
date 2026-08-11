@@ -4,6 +4,9 @@ import { useState } from "react";
 
 type Row = {
   id: number;
+  name: string;
+  phone: string;
+  email: string;
   liftType: string;
   capacity: string;
   height: string;
@@ -47,6 +50,9 @@ export function SubmissionsClient({ initialRows }: { initialRows: Row[] }) {
           <tr>
             <th>#</th>
             <th>Дата</th>
+            <th>Имя</th>
+            <th>Телефон</th>
+            <th>Email</th>
             <th>Тип</th>
             <th>Груз</th>
             <th>Высота</th>
@@ -63,6 +69,9 @@ export function SubmissionsClient({ initialRows }: { initialRows: Row[] }) {
               <td>
                 <time>{row.createdAt.slice(0, 16).replace("T", " ")}</time>
               </td>
+              <td>{row.name || "—"}</td>
+              <td>{row.phone || "—"}</td>
+              <td>{row.email || "—"}</td>
               <td>{row.liftType}</td>
               <td>{row.capacity}</td>
               <td>{row.height || "—"}</td>

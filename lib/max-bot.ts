@@ -98,6 +98,9 @@ export async function sendMaxMessage(
 /** Builds a readable notification text from a stored form submission. */
 export function formatSubmissionMessage(row: {
   id: number;
+  name: string;
+  phone: string;
+  email: string;
   liftType: string;
   capacity: string;
   height: string;
@@ -110,6 +113,9 @@ export function formatSubmissionMessage(row: {
     "🔔 Новая заявка с сайта",
     "",
     `Заявка №${row.id}`,
+    ...(row.name ? [`Имя: ${row.name}`] : []),
+    ...(row.phone ? [`Телефон: ${row.phone}`] : []),
+    ...(row.email ? [`Email: ${row.email}`] : []),
     `Тип оборудования: ${row.liftType}`,
     `Грузоподъёмность: ${row.capacity}`,
     ...(row.height ? [`Высота подъёма: ${row.height}`] : []),

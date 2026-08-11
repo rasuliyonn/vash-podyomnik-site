@@ -5,6 +5,9 @@ import { getMaxBotSettings, sendMaxMessage, formatSubmissionMessage } from "../.
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as {
+      name?: string;
+      phone?: string;
+      email?: string;
       liftType?: string;
       capacity?: string;
       height?: string;
@@ -13,6 +16,9 @@ export async function POST(request: Request) {
       stops?: string;
     };
 
+    const name = body.name?.trim() ?? "";
+    const phone = body.phone?.trim() ?? "";
+    const email = body.email?.trim() ?? "";
     const liftType = body.liftType?.trim() ?? "";
     const capacity = body.capacity?.trim() ?? "";
     const height = body.height?.trim() ?? "";
@@ -20,6 +26,9 @@ export async function POST(request: Request) {
     const city = body.city?.trim() ?? "";
     const stops = body.stops?.trim() ?? "";
 
+    if (!phone) {
+      return Response.json({ error: "Укажите телефон для связи" }, { status: 400 });
+    }
     if (!liftType || !capacity || !stops) {
       return Response.json({ error: "Обязательные поля отсутствуют" }, { status: 400 });
     }
@@ -27,7 +36,7 @@ export async function POST(request: Request) {
     const db = getDb();
     const [row] = await db
       .insert(formSubmissions)
-      .values({ liftType, capacity, height, platformSize, city, stops })
+      .values({ name, phone, email, liftType, capacity, height, platformSize, city, stops })
       .returning();
 
     // Forward the submission to the MAX messenger bot if configured.

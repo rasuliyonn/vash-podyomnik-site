@@ -4,6 +4,9 @@ export const metadata: Metadata = {
   title: "Пользовательское соглашение",
   description:
     "Пользовательское соглашение сайта «Ваш Подъёмник» — условия использования сайта и сервисов ООО «Ваш Подъёмник».",
+  alternates: {
+    canonical: "/terms",
+  },
 };
 
 export default function TermsPage() {

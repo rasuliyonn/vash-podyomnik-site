@@ -2,6 +2,7 @@ import { asc } from "drizzle-orm";
 import { getDb } from "../db";
 import { worksImages } from "../db/schema";
 import { getSiteContent } from "../lib/site-content";
+import { CONTACT_EMAIL } from "../lib/site-config";
 import { Calculator } from "./components/calculator";
 import { FaqSection } from "./components/faq-section";
 import { WorksGallery } from "./components/works-gallery";
@@ -17,6 +18,21 @@ async function getWorksImages(): Promise<string[]> {
   } catch {
     return [];
   }
+}
+
+function faqJsonLd(items: Array<{ q: string; a: string }>) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.a,
+      },
+    })),
+  };
 }
 
 export default async function Home() {
@@ -260,6 +276,11 @@ export default async function Home() {
 
       <Calculator content={c.calculator} />
 
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd(c.faq.items)) }}
+      />
+
       <FaqSection heading={c.faq.heading} items={c.faq.items} />
 
       <footer>
@@ -295,6 +316,7 @@ export default async function Home() {
           <div className="footer-links">
             <a href="/privacy">Политика конфиденциальности</a>
             <a href="/terms">Пользовательское соглашение</a>
+            <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
             <a href="#top">НАВЕРХ ↑</a>
           </div>
         </div>
