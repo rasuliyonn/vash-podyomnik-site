@@ -1,108 +1,96 @@
-# vinext-starter
+# «Ваш Подъёмник» — сайт (PHP 8 + SQLite)
 
-A clean full-stack starter running on
-[vinext](https://github.com/cloudflare/vinext), with optional Cloudflare D1 and
-Drizzle support.
+Полноценный PHP 8.x сайт для обычного shared-хостинга (Apache + PHP + SQLite).
+Весь репозиторий — это сайт: его можно заливать на FTP как есть.
 
-## Prerequisites
+## Что внутри
 
-- Node.js `>=22.13.0`
-- Linux with `flock`, `curl`, and GNU `timeout`
+- Публичные страницы: главная, каталог оборудования, 5 карточек оборудования,
+  «Наши работы» (71 фото), «Вопросы и ответы» (28 вопросов), блог (16 статей),
+  «О компании», «Контакты», «Расчёт стоимости», privacy, terms, 404.
+- SEO/GEO: мета-теги и canonical на каждую страницу, JSON-LD (Organization + LocalBusiness,
+  WebSite, BreadcrumbList, FAQPage, Article, Service, ItemList, ImageGallery),
+  `sitemap.xml` (генерируется), `robots.txt` с правилами для ответных ИИ-краулеров,
+  `llms.txt`, RSS блога (`/blog/rss.xml`), OG-обложка.
+- Форма заявки → SQLite `data/site.sqlite` (таблица `form_submissions`) +
+  копирование текста заявки в буфер (работает и без JS).
+- Админка `/admin`: заявки (статусы), оборудование (тексты, хар-ки, фото, документы),
+  работы (галерея: добавление/удаление/подписи), смена пароля.
+- Портфолио: при первом обращении `works_images` автозаполняется файлами `works/work-*.jpg`.
 
-## Sites Lifecycle
+## Требования
 
-The Sites lifecycle CLI runs the locked dependency install before returning this checkout. Edit the source under `app/`, then checkpoint when a coherent milestone is ready to inspect or share. The remote Sites builder runs `npm run build` against the pushed commit. Do not repeat install or build as a normal pre-checkpoint step.
+- PHP **8.0+** с расширениями: `pdo_sqlite`, `sqlite3`, `mbstring`, `fileinfo`, `json`
+- Apache с `mod_rewrite`, `mod_headers`, `mod_expires`/`mod_deflate` (желательно)
+- Каталог `data/` — доступен на запись (там создаётся `site.sqlite`)
+- Каталог `uploads/` — доступен на запись (сюда попадают файлы из админки)
 
-This starter does not use `wrangler.jsonc`.
+## Установка на shared-хостинг (FTP)
 
-`install:ci` is intentionally a single, non-retrying `npm ci`. It refuses a concurrent install for the same project, consumes a matching image-seeded npm cache with `--prefer-offline` while retaining registry fallback for a missing cache object, otherwise downloads and verifies the complete vinext tarball recorded in `package-lock.json`, limits npm to one socket, and terminates a stalled install. `build` applies a short timeout and then validates the Sites artifact. These helpers target Linux and use GNU `timeout`; they are not native macOS scripts.
+1. Залейте содержимое репозитория в корень сайта (обычно `public_html/` или `www/`).
+   Папки `.git`, `.claude`, `.openai`, `.freebuff` заливать **не нужно**.
+2. Убедитесь, что `.htaccess` перенёсся (он скрытый; в FileZilla: «Принудительный показ скрытых»).
+3. Выставьте права (если нужно): `data` и `uploads` — `755` (или `775`).
+4. Откройте `https://ваш-домен/` — главная должна загрузиться.
+   База `data/site.sqlite` и таблицы создадутся автоматически при первом запросе.
+5. Зайдите в `/admin`, пароль по умолчанию — **admin**. **Сразу** смените в «Настройки».
+6. Проверьте `/sitemap.xml`, `/robots.txt`, отправьте их в Яндекс.Вебмастер и Google Search Console.
 
-Scripts that need writable project-scoped home, npm, XDG, and temporary paths use `scripts/sites-env.sh`. The `dev` and `start` scripts honor the caller's runtime environment and keep Wrangler logs inside the checkout. The generated `.sites-runtime/` directory is disposable and ignored by Git.
+## Настройка через окружение (SetEnv в .htaccess)
 
-## Included Shape
+Пример — в закомментированных строках `.htaccess`. Раскомментируйте и подставьте:
 
-- edit site code under `app/`
-- `app/chatgpt-auth.ts` provides optional dispatch-owned ChatGPT sign-in helpers
-- `.openai/hosting.json` declares optional Sites D1 and R2 bindings
-- `vite.config.ts` simulates declared bindings for local development
-- `db/index.ts` reads the D1 binding from the Cloudflare Worker environment
-- `db/schema.ts` starts intentionally empty
-- `examples/d1/` contains an optional D1 example surface
-- `drizzle.config.ts` supports local migration generation when needed
-
-## Workspace Auth Headers
-
-OpenAI workspace sites can read the current user's email from
-`oai-authenticated-user-email`.
-
-SIWC-authenticated workspace sites may also receive
-`oai-authenticated-user-full-name` when the user's SIWC profile has a non-empty
-`name` claim. The full-name value is percent-encoded UTF-8 and is accompanied by
-`oai-authenticated-user-full-name-encoding: percent-encoded-utf-8`.
-
-Treat the full name as optional and fall back to email when it is absent:
-
-```tsx
-import { headers } from "next/headers";
-
-export default async function Home() {
-  const requestHeaders = await headers();
-  const email = requestHeaders.get("oai-authenticated-user-email");
-  const encodedFullName = requestHeaders.get("oai-authenticated-user-full-name");
-  const fullName =
-    encodedFullName &&
-    requestHeaders.get("oai-authenticated-user-full-name-encoding") ===
-      "percent-encoded-utf-8"
-      ? decodeURIComponent(encodedFullName)
-      : null;
-
-  const displayName = fullName ?? email;
-  // ...
-}
+```apache
+SetEnv CONTACT_PHONE "+7 (863) 000-00-00"
+SetEnv CONTACT_HOURS "Пн–Пт 08:00–18:00"
+SetEnv YANDEX_METRIKA_ID "12345678"
+SetEnv GA4_ID "G-XXXXXXXXXX"
+SetEnv YANDEX_VERIFICATION "код-из-вебмастера"
+SetEnv GOOGLE_VERIFICATION "код-из-search-console"
 ```
 
-## Optional Dispatch-Owned ChatGPT Sign-In
+Телефон/часы по умолчанию пустые — блок не выводится, schema.org без телефона.
+**Выдумывать номер нельзя — задайте реальный.**
 
-Import the ready-to-use helpers from `app/chatgpt-auth.ts` when the site needs
-optional or required ChatGPT sign-in:
+## Локальный предпросмотр
 
-- Use `getChatGPTUser()` for optional signed-in UI.
-- Use `requireChatGPTUser(returnTo)` for server-rendered pages that should send
-  anonymous visitors through Sign in with ChatGPT.
-- Use `chatGPTSignInPath(returnTo)` and `chatGPTSignOutPath(returnTo)` for
-  browser links or actions.
-- Pass a same-origin relative `returnTo` path for the destination after sign-in
-  or sign-out. The helper validates and safely encodes it.
-- Mark protected pages with `export const dynamic = "force-dynamic"` because
-  they depend on per-request identity headers.
+```bash
+start-php.bat
+```
+откроет сайт на http://127.0.0.1:8090/ (нужен PHP 8 на машине; если PHP нет — скрипт
+попробует портабельную сборку из Temp и подскажет, где скачать).
+Сайт также работает через `php -S` с роутером `router.dev.php`, который нужен
+только локально; на хостинг он безвреден.
 
-Dispatch owns `/signin-with-chatgpt`, `/signout-with-chatgpt`, `/callback`, the
-OAuth cookies, and identity header injection. Do not implement app routes for
-those reserved paths. Routes that do not import and call the helper remain
-anonymous-compatible.
+OG-обложка пересоздаётся: `php scripts/make-og-cover.php` (нужен PHP с GD).
 
-SIWC establishes identity only; it does not prove workspace membership. Use the
-Sites hosting platform's access policy controls for workspace-wide restrictions,
-or enforce explicit server-side membership or allowlist checks.
+## Что здесь НЕ используется
 
-Use SIWC for account pages, user-specific dashboards, saved records, and write
-actions tied to the current ChatGPT user. Leave public content anonymous.
+- Node.js/Next.js/Cloudflare Workers не нужны — сайт целиком на PHP.
+- MAX-бот: заявки копятся в админке; если нужен бот — нужен токен, обращайтесь.
+- Главные тексты сайта правятся в `lib/content.php` (не через админку).
 
-## Diagnostic Commands
+## Структура
 
-- `npm run install:ci`: perform the one bounded lockfile install
-- `npm run dev`: start the Vite/Vinext development server
-- `npm run build`: build and validate the deployable Sites artifact
-- `npm run start`: start the built Vinext application
-- `npm test`: build, validate, and verify the rendered development-preview metadata
-- `npm run validate:artifact`: recheck an existing artifact's manifest and ESM `default.fetch` export
-- `npm run db:generate`: generate Drizzle migrations after schema changes
+```
+├── index.php          # front controller (маршрутизация)
+├── .htaccess          # ЧПУ, защита data/lib/pages, заголовки, кеш
+├── start-php.bat      # локальный запуск (Windows)
+├── config.php         # SITE_URL, реквизиты, env (секреты сюда НЕ пишем)
+├── lib/               # db, seo, render, content, equipment, faq, blog, admin
+│   └── articles/      # 16 статей блога (файл = статья)
+├── pages/             # страницы (*.php) + pages/partials/calculator.php
+├── assets/            # style.css + site-ext.css + app.js + картинки
+├── works/             # 71 фото портфолио
+├── uploads/           # файлы из админки (создаётся автоматически)
+└── data/              # site.sqlite (создаётся автоматически)
+```
 
-Use build and validation commands for targeted diagnosis after a remote failure, not as part of the normal checkpoint path.
+## Частые проблемы
 
-The timeout defaults can be overridden for a controlled canary with `SITES_INSTALL_TIMEOUT`, `SITES_INSTALL_KILL_AFTER`, `SITES_BUILD_TIMEOUT`, and `SITES_BUILD_KILL_AFTER`. A timeout fails the command; the helpers never retry an unchanged install or build.
-
-## Learn More
-
-- [vinext Documentation](https://github.com/cloudflare/vinext)
-- [Drizzle D1 Guide](https://orm.drizzle.team/docs/get-started/d1-new)
+- **«Не удалось создать каталог data/»** — дайте `data/` права на запись.
+- **404 вместо ЧПУ** — у хостинга нет mod_rewrite или выключен `.htaccess`;
+  включите AllowOverride, либо обратитесь в поддержку хостинга.
+- **Кириллица-«крокозябры»** — файлы .php должны остаться в UTF-8 (они уже в UTF-8);
+  не пересохраняйте их в Windows Notepad.
+- **Сайт белый/500** — смотрите `php-error.log` в корне; чаще всего — нет `pdo_sqlite`.

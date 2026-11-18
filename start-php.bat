@@ -1,14 +1,13 @@
 @echo off
 setlocal
-REM Local preview of the NEW PHP version of the site.
-REM start.bat keeps showing the OLD Next.js app; this file starts the PHP site.
+REM Local preview of the PHP site (repository root IS the site).
 
 cd /d "%~dp0"
 
 where php >nul 2>nul
 if %ERRORLEVEL%==0 (
     echo Open http://127.0.0.1:8090/ in your browser. Stop with Ctrl+C.
-    php -S 127.0.0.1:8090 -t "%CD%\php-site" "%CD%\php-site\router.dev.php"
+    php -S 127.0.0.1:8090 -t "%CD%" "%CD%\router.dev.php"
     goto :eof
 )
 
@@ -16,7 +15,7 @@ set PORTABLE=%LOCALAPPDATA%\Temp\opencode\php-8.4\php.exe
 if exist "%PORTABLE%" (
     echo PHP not found in PATH; using portable PHP from Temp.
     echo Open http://127.0.0.1:8090/ in your browser. Stop with Ctrl+C.
-    "%PORTABLE%" -c "%LOCALAPPDATA%\Temp\opencode\php-8.4\php.ini" -S 127.0.0.1:8090 -t "%CD%\php-site" "%CD%\php-site\router.dev.php"
+    "%PORTABLE%" -c "%LOCALAPPDATA%\Temp\opencode\php-8.4\php.ini" -S 127.0.0.1:8090 -t "%CD%" "%CD%\router.dev.php"
     goto :eof
 )
 
