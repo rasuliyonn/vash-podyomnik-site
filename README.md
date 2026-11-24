@@ -95,7 +95,8 @@ py -3 <путь-к-claude-seo>/scripts/runtime.py run indexnow_submit.py --host 
 ├── lib/               # db, seo, render, content, equipment, faq, blog, admin
 │   └── articles/      # 16 статей блога (файл = статья)
 ├── pages/             # страницы (*.php) + pages/partials/calculator.php
-├── assets/            # style.css + site-ext.css + app.js + cookie-banner.js + картинки
+├── assets/            # site.css (публичные страницы) + responsive.css (адаптив) +
+│                      # style.css/site-ext.css (админка) + app.js + cookie-banner.js + картинки
 ├── docs/              # чек-лист соответствия законам РФ (регистрация в Роскомнадзоре и др. внешние обязательства)
 ├── works/             # 71 фото портфолио
 ├── uploads/           # файлы из админки (создаётся автоматически)

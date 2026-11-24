@@ -25,6 +25,12 @@ $jsonld = [
     ]),
     article_jsonld($article),
 ];
+$articleBody = $article['body'];
+if (stripos($articleBody, '<table') !== false) {
+    $articleBody = preg_replace('/<table(\s[^>]*)?>/i', '<div class="table-scroll"><table$1>', $articleBody);
+    $articleBody = str_replace('</table>', '</table></div>', $articleBody);
+}
+
 $articleFaq = $article['faq'] ?? [];
 if ($articleFaq) {
     $jsonld[] = faq_jsonld($articleFaq);
@@ -52,7 +58,7 @@ page_start(
   <p class="blog-lead"><?= e($article['description']) ?></p>
 
   <article class="prose" style="margin-top: 30px">
-    <?= $article['body'] ?>
+    <?= $articleBody ?>
   </article>
 
   <?php if ($articleFaq): ?>

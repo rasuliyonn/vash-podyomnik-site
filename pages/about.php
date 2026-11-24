@@ -98,7 +98,7 @@ page_start(
 
   <div class="section-more" style="margin-top: 40px">
     <a class="primary-button" href="/raschet">Получить расчёт<span aria-hidden="true"> →</span></a>
-    <a class="text-link" href="/nashi-raboty" style="margin-left: 18px">Смотреть наши работы<span aria-hidden="true"> →</span></a>
+    <a class="text-link" href="/nashi-raboty">Смотреть наши работы<span aria-hidden="true"> →</span></a>
   </div>
 </main>
 <?php page_end(); ?>

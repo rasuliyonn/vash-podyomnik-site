@@ -55,7 +55,7 @@ function render_header(): void
     <a href="<?= e($link['href']) ?>"><?= e($link['label']) ?></a>
     <?php endforeach; ?>
   </nav>
-  <a class="header-cta" href="/raschet">Получить расчёт<span aria-hidden="true">↗</span></a>
+  <a class="header-cta" href="/raschet"><span class="header-cta-label"><span class="header-cta-long">Получить </span>расчёт</span><span class="header-cta-arrow" aria-hidden="true">↗</span></a>
 </header>
 <nav class="mobile-bottom-nav" aria-label="Мобильная навигация">
   <?php foreach (nav_links() as $link): ?>
@@ -210,6 +210,7 @@ function page_start(string $title, string $description, string $canonicalPath, a
 <link rel="preload" href="/assets/fonts/pt-sans-narrow-700-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/pt-sans-400-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/site.css?v=4">
+<link rel="stylesheet" href="/assets/responsive.css?v=1">
 <meta property="og:type" content="<?= e($ogType) ?>">
 <meta property="og:locale" content="ru_RU">
 <meta property="og:site_name" content="<?= e(SITE_NAME) ?>">

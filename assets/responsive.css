@@ -1,0 +1,675 @@
+/* ==========================================================================
+   АДАПТИВНЫЙ СЛОЙ «ВАШ ПОДЪЁМНИК»
+
+   Подключается последним:
+     • публичные страницы — после /assets/site.css (lib/render.php);
+     • админка — после /assets/style.css + /assets/site-ext.css (lib/admin.php).
+
+   Здесь собраны исправления адаптивности и точечные баги вёрстки,
+   которые нельзя чинить правкой одного из двух CSS-бандлов (site.css и
+   style.css + site-ext.css собираются из одних и тех же исходников).
+   ========================================================================== */
+
+/* ── База ─────────────────────────────────────────────────────────────── */
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* ── /voprosy: у вопросов нет колонки с номером ──────────────────────────
+   Раскладка 52px/1fr/34px рассчитана на главную (там у вопроса есть номер),
+   из-за чего на странице «Вопросы и ответы» текст сжимался в 28–52px. */
+
+.faq-page .faq-list button {
+  grid-template-columns: 1fr 40px;
+}
+
+.faq-page .faq-answer p {
+  margin-left: 0;
+}
+
+/* ── Калькулятор: колонка 1fr не должна раздуваться от min-content ────── */
+
+.calculator-form {
+  min-width: 0;
+}
+
+.calculator-form input,
+.calculator-form select {
+  min-width: 0;
+  width: 100%;
+}
+
+.calculator-form .form-row > *,
+.calculator-form .platform-inputs > * {
+  min-width: 0;
+}
+
+/* ── Шапка: подпись и стрелка CTA — отдельные элементы ─────────────────── */
+
+.header-cta .header-cta-label {
+  font-size: 13px;
+}
+
+.header-cta .header-cta-arrow {
+  font-size: 20px;
+}
+
+/* ── Две кнопки подряд (about): на телефоне — в столбик ────────────────── */
+
+.section-more .text-link {
+  margin-left: 18px;
+}
+
+/* ── Cookie-баннер: у кнопки «Отклонить» не было стилей ────────────────── */
+
+.cookie-notice-actions {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+.cookie-notice-reject {
+  appearance: none;
+  background: transparent;
+  border: 1px solid var(--line-strong, rgba(255, 255, 255, 0.24));
+  border-radius: 3px;
+  color: var(--soft, #b8bcb9);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 8px 14px;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.cookie-notice-reject:hover {
+  border-color: var(--soft, #b8bcb9);
+  color: var(--white, #f2f1ee);
+}
+
+/* ── Модальные слои: лайтбокс всегда выше баннера cookie ───────────────── */
+
+.lightbox-overlay {
+  z-index: 1300;
+}
+
+/* ── Горизонтальные прокрутки на тач-устройствах ───────────────────────── */
+
+.compare-wrap,
+.admin-table-wrap {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
+/* ── Таблицы в статьях: прокрутка вместо обрезки ───────────────────────── */
+
+.table-scroll {
+  -webkit-overflow-scrolling: touch;
+  margin: 0 0 22px;
+  overscroll-behavior-x: contain;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.table-scroll > table {
+  margin-bottom: 0;
+}
+
+/* ── Юридические страницы и карточки оборудования: хлебные крошки
+      больше не прячутся под абсолютной шапкой (72/74px). ──────────────── */
+
+.legal-page,
+.eq-page {
+  padding-top: 72px;
+}
+
+.eq-hero {
+  padding-top: 88px;
+}
+
+.legal-doc {
+  padding-top: 56px;
+}
+
+/* ── Админка: поля не должны вылезать за форму ─────────────────────────── */
+
+.admin-label input:not([type="checkbox"]):not([type="radio"]),
+.admin-label textarea,
+.admin-label select {
+  max-width: 100%;
+  width: 100%;
+}
+
+/* поле подписи фото в админке было нативным (белым) */
+.admin-work-caption {
+  align-items: center;
+  display: flex;
+  gap: 6px;
+}
+
+.admin-work-caption input[type="text"] {
+  background: var(--black);
+  border: 1px solid var(--line);
+  color: var(--white);
+  flex: 1;
+  font-size: 13px;
+  min-width: 0;
+  padding: 7px 9px;
+}
+
+.admin-work-caption input[type="text"]:focus {
+  border-color: var(--red);
+  outline: none;
+}
+
+/* нативный file-input в тёмной теме */
+.admin-label input[type="file"] {
+  color: var(--soft);
+  font-size: 13px;
+}
+
+.admin-label input[type="file"]::file-selector-button {
+  background: var(--red);
+  border: 0;
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  margin-right: 10px;
+  padding: 8px 12px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ПЛАНШЕТ / МОБИЛЬНЫЙ: до 1100px
+   ══════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 1100px) {
+  /* верхнее меню скрыто — CTA должна стоять справа, а не посередине */
+  .site-header {
+    grid-template-columns: 1fr auto;
+  }
+
+  /* нижняя навигация не должна перекрывать последние строки футера */
+  main {
+    padding-bottom: calc(52px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .mobile-bottom-nav {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  footer {
+    padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* баннер cookie — над нижней навигацией, а не поверх неё */
+  .cookie-notice {
+    bottom: calc(64px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* ── Планшет: до 820px ─────────────────────────────────────────────────── */
+
+@media (max-width: 820px) {
+  .legal-page,
+  .eq-page {
+    padding-top: 74px;
+  }
+
+  .eq-hero {
+    padding-top: 56px;
+  }
+
+  /* «ТОП СТАТЕЙ»: меньше воздуха, 2 колонки, читаемые подписи */
+  .top-articles {
+    padding: 56px 22px;
+  }
+
+  /* /top-articles — это сама страница: крошки должны быть под шапкой */
+  main.top-articles {
+    padding-top: 130px;
+  }
+
+  main.top-articles .top-articles-head {
+    margin-top: 20px;
+  }
+
+  .top-articles-head {
+    margin-bottom: 32px;
+  }
+
+  .top-articles-heading {
+    font-size: clamp(32px, 8vw, 46px);
+  }
+
+  .top-articles-grid {
+    gap: 10px;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .top-article {
+    padding: 20px 16px 18px;
+  }
+
+  .top-article-title {
+    font-size: 19px;
+  }
+
+  .top-article-num,
+  .top-article-cat,
+  .top-article-meta {
+    font-size: 11px;
+  }
+
+  .top-article-lead {
+    font-size: 13px;
+  }
+
+  /* карточки оборудования: убираем пустоту от min-height и margin: auto */
+  .equipment-card,
+  .equipment-card:nth-child(n) {
+    min-height: 0;
+  }
+
+  .equipment-card h3 {
+    margin: 18px 0 10px;
+  }
+
+  /* мелкие подписи на мобильных — крупнее */
+  .tags span {
+    font-size: 11px;
+    padding: 6px 8px;
+  }
+
+  .card-top {
+    font-size: 11px;
+  }
+
+  .hero-metrics span {
+    font-size: 11px;
+  }
+
+  /* ссылки в крошках — удобная зона касания */
+  .breadcrumb a {
+    padding: 5px 0;
+  }
+
+  /* чекбоксы согласий — крупнее */
+  .calculator-form .consent-label input[type="checkbox"] {
+    height: 20px;
+    min-height: 20px;
+    min-width: 20px;
+    width: 20px;
+  }
+
+  .calculator-form label > span,
+  .request-preview small {
+    font-size: 11px;
+  }
+
+  .calculator-form .consent-label span {
+    font-size: 12px;
+  }
+
+  .privacy {
+    font-size: 11px;
+  }
+
+  .blog-cat {
+    font-size: 12px;
+  }
+
+  .blog-card-badge {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+  }
+
+  .works-card-num,
+  .works-cell span {
+    font-size: 11px;
+  }
+
+  .footer-cols h3 {
+    font-size: 12px;
+  }
+
+  .footer-cols a {
+    padding: 7px 0;
+  }
+
+  .footer-bottom {
+    font-size: 12px;
+  }
+
+  .footer-links {
+    flex-wrap: wrap;
+    gap: 8px 22px;
+  }
+
+  .footer-links a {
+    font-size: 12px;
+    padding: 8px 0;
+  }
+
+  .faq-list button > span {
+    font-size: 10px;
+  }
+
+  .faq-answer p {
+    font-size: 14px;
+  }
+
+  .faq-page .faq-list button > b {
+    font-size: 15px;
+  }
+
+  .section-more .text-link {
+    margin-left: 0;
+    margin-top: 12px;
+  }
+
+  /* поля 16px — iOS не зумит страницу при фокусе */
+  .calculator-form input,
+  .calculator-form select,
+  .admin-label input,
+  .admin-label textarea,
+  .admin-label select {
+    font-size: 16px;
+  }
+}
+
+/* ── Шапка: от 481 до 820px показываем текст CTA, а не только стрелку ──── */
+
+@media (min-width: 481px) and (max-width: 820px) {
+  .header-cta {
+    font-size: 13px;
+    gap: 10px;
+    min-height: 44px;
+    padding: 0 15px;
+  }
+
+  .header-cta .header-cta-arrow {
+    font-size: 18px;
+  }
+}
+
+/* ── Телефон: до 480px ─────────────────────────────────────────────────── */
+
+@media (max-width: 480px) {
+  .header-cta {
+    font-size: 13px;
+    gap: 7px;
+    min-height: 44px;
+    padding: 0 13px;
+  }
+
+  .header-cta .header-cta-label {
+    text-transform: capitalize;
+  }
+
+  .header-cta .header-cta-arrow {
+    font-size: 17px;
+  }
+
+  /* «Получить » скрываем визуально, но оставляем для скринридеров */
+  .header-cta-long,
+  .mobile-bottom-nav .nav-cta-long {
+    border: 0;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+
+  .brand b {
+    font-size: 13px;
+  }
+
+  .brand-mark {
+    height: 38px;
+    width: 38px;
+  }
+
+  /* нижнее меню: 6 пунктов помещаются даже на 320px */
+  .mobile-bottom-nav a {
+    font-size: 10px;
+    letter-spacing: 0;
+    line-height: 1.15;
+    min-height: 56px;
+    min-width: 0;
+    padding: 8px 3px;
+  }
+
+  .mobile-bottom-nav .mobile-nav-cta span {
+    text-transform: capitalize;
+  }
+
+  main {
+    padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .cookie-notice {
+    bottom: calc(68px + env(safe-area-inset-bottom, 0px));
+    left: 10px;
+    max-width: none;
+    padding: 14px;
+    right: 10px;
+  }
+
+  .cookie-notice p {
+    font-size: 13px;
+  }
+
+  .cookie-notice-actions {
+    width: 100%;
+  }
+
+  .cookie-notice-accept,
+  .cookie-notice-reject {
+    flex: 1;
+    font-size: 13px;
+    min-height: 44px;
+    padding: 10px 12px;
+  }
+
+  .equipment-card {
+    padding: 18px;
+  }
+}
+
+/* ── Очень узкий телефон: до 380px ────────────────────────────────────── */
+
+@media (max-width: 380px) {
+  /* 6 пунктов нижнего меню не влезают в строку — сетка 3×2 */
+  .mobile-bottom-nav {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .mobile-bottom-nav a {
+    border-right: 0;
+    border-top: 1px solid var(--line);
+    min-height: 48px;
+    padding: 6px 4px;
+  }
+
+  .mobile-bottom-nav a:nth-child(-n+3) {
+    border-top: 0;
+  }
+
+  .mobile-bottom-nav a:nth-child(3n+1),
+  .mobile-bottom-nav a:nth-child(3n+2) {
+    border-right: 1px solid var(--line);
+  }
+
+  main {
+    padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px));
+  }
+
+  footer {
+    padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .cookie-notice {
+    bottom: calc(112px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* админ-меню: 4 пункта не влезают в строку — сетка 2×2 */
+  .admin-nav {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    overflow: visible;
+  }
+
+  .admin-nav a {
+    border-bottom: 1px solid var(--line);
+    padding: 10px 12px;
+    text-align: center;
+  }
+
+  .admin-nav a:nth-child(odd) {
+    border-right: 1px solid var(--line);
+  }
+}
+
+/* ── Контентные страницы: меньше верхнего отступа под шапкой ───────────── */
+
+@media (max-width: 640px) {
+  .blog-index,
+  .blog-article,
+  .works-page,
+  .faq-page,
+  .catalog-page,
+  .page-slim {
+    padding-top: 96px;
+  }
+
+  /* у /blog блок «ТОП СТАТЬИ» уже внутри контейнера с полями */
+  .blog-index .top-articles {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+@media (max-width: 560px) {
+  .top-articles {
+    padding: 44px 18px 48px;
+  }
+
+  main.top-articles {
+    padding-top: 118px;
+  }
+
+  .top-articles-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Админка: шапка, меню и формы на телефоне ──────────────────────────── */
+
+@media (max-width: 640px) {
+  .admin-header {
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    height: auto;
+    padding: 10px 16px;
+  }
+
+  .admin-header > a:last-child {
+    margin-left: auto;
+  }
+
+  .admin-nav {
+    background: transparent;
+    border-bottom: 0;
+    margin: 0 -16px;
+    order: 3;
+    overflow-x: auto;
+    padding: 0 8px;
+    width: calc(100% + 32px);
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admin-nav a {
+    padding: 12px;
+    white-space: nowrap;
+  }
+
+  .admin-main {
+    padding: 24px 16px 64px;
+  }
+
+  .admin-form,
+  .admin-media-section,
+  .admin-section {
+    padding: 20px 16px;
+  }
+
+  .admin-form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-actions,
+  .admin-form-actions {
+    flex-wrap: wrap;
+  }
+
+  .admin-table-wrap {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admin-label > span,
+  .admin-label small {
+    font-size: 12px;
+  }
+
+  .admin-login-box {
+    padding: 28px 20px;
+  }
+
+  .admin-login-brand {
+    flex-wrap: wrap;
+    row-gap: 4px;
+  }
+
+  .admin-login-brand small {
+    flex-basis: 100%;
+  }
+
+  .admin-checkbox input[type="checkbox"] {
+    height: 20px;
+    width: 20px;
+  }
+
+  .admin-action-btn {
+    min-height: 36px;
+    padding: 8px 12px;
+  }
+
+  .admin-list-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .admin-spec-row input {
+    min-width: 0;
+  }
+
+  .admin-specs {
+    padding: 14px;
+  }
+
+  .admin-doc-list li {
+    flex-wrap: wrap;
+  }
+}
