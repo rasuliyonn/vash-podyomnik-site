@@ -28,7 +28,7 @@ $jsonld = [
 ];
 
 page_start(
-    $title,
+    $title . ': характеристики, грузоподъёмность, монтаж',
     mb_substr($data['description'], 0, 160),
     '/equipment/' . $slug,
     ['jsonld' => $jsonld]
@@ -67,7 +67,7 @@ page_start(
       <div class="eq-section-label"><span>/ ОСОБЕННОСТИ</span></div>
       <ul class="eq-list">
         <?php foreach ($data['features'] as $i => $f): ?>
-        <li><span><?= str_pad((string) ($i + 1), 2, '0', STR_PAD_LEFT) ?></span><?= e($f) ?></li>
+        <li><span>◆</span><?= e($f) ?></li>
         <?php endforeach; ?>
       </ul>
     </div>
@@ -98,7 +98,6 @@ page_start(
     <div class="eq-applications">
       <?php foreach ($data['applications'] as $i => $app): ?>
       <div class="eq-app-card">
-        <span><?= str_pad((string) ($i + 1), 2, '0', STR_PAD_LEFT) ?></span>
         <p><?= e($app) ?></p>
       </div>
       <?php endforeach; ?>
@@ -119,16 +118,27 @@ page_start(
     <div class="eq-section-label"><span>/ ДОКУМЕНТЫ</span></div>
     <div class="eq-documents">
       <?php
-      $docIcons = ['pdf' => '📄', 'certificate' => '🏆', 'instruction' => '📋', 'scheme' => '📐', 'video' => '🎬'];
+      // Иконки документов: Lucide-стиль, stroke-based SVG
+      $docIcon = static function (string $type): string {
+          $paths = [
+              'pdf' => '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="10" y1="13" x2="14" y2="13"/><line x1="10" y1="17" x2="14" y2="17"/>',
+              'certificate' => '<circle cx="12" cy="9" r="6"/><path d="M8.5 13.5 7 22l5-3 5 3-1.5-8.5"/><path d="M12 6.5v5"/><path d="M9.5 9h5"/>',
+              'instruction' => '<rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 12h6"/><path d="M9 16h4"/>',
+              'scheme' => '<path d="M2 17l8-11 6 8 2.5-3.5L22 17z"/><path d="M2 21h20"/>',
+              'video' => '<rect x="2" y="5" width="20" height="14" rx="2"/><polygon points="10 9 15 12 10 15" fill="currentColor" stroke="none"/>',
+          ];
+          $inner = $paths[$type] ?? $paths['pdf'];
+          return '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' . $inner . '</svg>';
+      };
       foreach ($data['documents'] as $doc):
           $sizeKb = (int) ($doc['size_kb'] ?? 0);
           $size = $sizeKb > 1024 ? number_format($sizeKb / 1024, 1) . ' МБ' : ($sizeKb > 0 ? $sizeKb . ' КБ' : '');
       ?>
       <a class="eq-doc-card" href="<?= e($doc['url']) ?>" target="_blank" rel="noopener noreferrer" download>
-        <span class="eq-doc-icon"><?= $docIcons[$doc['doc_type']] ?? '📄' ?></span>
+        <span class="eq-doc-icon"><?= $docIcon((string) ($doc['doc_type'] ?? 'pdf')) ?></span>
         <span class="eq-doc-name"><?= e($doc['name']) ?></span>
         <?php if ($size !== ''): ?><span class="eq-doc-size"><?= e($size) ?></span><?php endif; ?>
-        <span class="eq-doc-dl">↓</span>
+        <span class="eq-doc-dl" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><polyline points="6.5 11 12 16.5 17.5 11"/><path d="M4 21h16"/></svg></span>
       </a>
       <?php endforeach; ?>
     </div>

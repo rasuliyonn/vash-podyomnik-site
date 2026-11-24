@@ -1,6 +1,6 @@
 <?php
 /**
- * Работы: /admin/works — список, загрузка, удаление, импорт статических файлов.
+ * Работы: /upravlenie/works — список, загрузка, удаление, импорт статических файлов.
  */
 
 declare(strict_types=1);
@@ -109,7 +109,7 @@ admin_page_start('Наши работы');
 
 <h2 class="admin-list-header">Наши работы (<?= count($works) ?>)</h2>
 
-<form method="post" action="/admin/works" enctype="multipart/form-data" class="admin-form" style="margin-bottom: 24px">
+<form method="post" action="/upravlenie/works" enctype="multipart/form-data" class="admin-form" style="margin-bottom: 24px">
   <?= admin_csrf_field() ?>
   <input type="hidden" name="action" value="upload">
   <label class="admin-label"><span class="admin-label-text">Добавить фото (JPG/PNG/WebP, до 8 МБ, можно несколько)</span>
@@ -118,7 +118,7 @@ admin_page_start('Наши работы');
   <button type="submit" class="primary-button form-button">Загрузить</button>
 </form>
 
-<form method="post" action="/admin/works" style="margin-bottom: 24px">
+<form method="post" action="/upravlenie/works" style="margin-bottom: 24px">
   <?= admin_csrf_field() ?>
   <input type="hidden" name="action" value="import_static">
   <button type="submit" class="admin-action-btn secondary">Импортировать статические work-1…71.jpg</button>
@@ -129,14 +129,14 @@ admin_page_start('Наши работы');
   <div class="admin-work-card">
     <img class="admin-thumb" src="<?= e($work['url']) ?>" alt="<?= e($work['caption']) ?>" loading="lazy">
     <div class="admin-work-meta">
-      <form method="post" action="/admin/works" class="admin-work-caption">
+      <form method="post" action="/upravlenie/works" class="admin-work-caption">
         <?= admin_csrf_field() ?>
         <input type="hidden" name="action" value="caption">
         <input type="hidden" name="id" value="<?= (int) $work['id'] ?>">
         <input type="text" name="caption" value="<?= e($work['caption']) ?>" placeholder="Подпись (объект, город)…">
         <button type="submit" class="admin-action-btn secondary">OK</button>
       </form>
-      <form method="post" action="/admin/works" onsubmit="return confirm('Удалить фото?');">
+      <form method="post" action="/upravlenie/works" onsubmit="return confirm('Удалить фото?');">
         <?= admin_csrf_field() ?>
         <input type="hidden" name="action" value="delete">
         <input type="hidden" name="id" value="<?= (int) $work['id'] ?>">

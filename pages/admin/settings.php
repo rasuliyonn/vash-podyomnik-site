@@ -1,6 +1,6 @@
 <?php
 /**
- * Настройки: /admin/settings — смена пароля и подсказки по env-переменным.
+ * Настройки: /upravlenie/settings — смена пароля и подсказки по env-переменным.
  */
 
 declare(strict_types=1);
@@ -43,7 +43,7 @@ admin_page_start('Настройки');
 <?php if ($notice !== ''): ?><p class="admin-ok"><?= e($notice) ?></p><?php endif; ?>
 <?php if ($error !== ''): ?><p class="admin-error-box"><?= e($error) ?></p><?php endif; ?>
 
-<form method="post" action="/admin/settings" class="admin-form" style="max-width: 520px">
+<form method="post" action="/upravlenie/settings" class="admin-form" style="max-width: 520px">
   <?= admin_csrf_field() ?>
   <h2 class="admin-list-header">Сменить пароль</h2>
   <label class="admin-label"><span class="admin-label-text">Текущий пароль</span>
@@ -70,7 +70,7 @@ admin_page_start('Настройки');
     <li><code>GA4_ID</code> — Google Analytics 4</li>
     <li><code>YANDEX_VERIFICATION</code>, <code>GOOGLE_VERIFICATION</code> — коды верификации вебмастеров</li>
     <li><code>ADMIN_PASSWORD</code> — пароль админки до первой смены здесь</li>
-    <li><code>SITE_URL</code> — канонический адрес (по умолчанию https://vash-podyomnik.ru)</li>
+    <li><code>SITE_URL</code> — канонический адрес (по умолчанию https://vashpodemnik61.ru)</li>
   </ul>
 </section>
 <?php

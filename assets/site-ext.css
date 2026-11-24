@@ -32,12 +32,20 @@
   grid-template-columns: repeat(4, 1fr);
   padding: 34px 3.1vw 26px;
 }
+.footer-cols a {
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.footer-cols a:hover {
+  border-color: var(--red-bright);
+  color: var(--white);
+}
 .footer-cols h3 {
   color: var(--soft);
   font-size: 11px;
   letter-spacing: 0.12em;
   margin: 0 0 14px;
-  text-transform: uppercase;
+  text-transform: none;
 }
 .footer-cols a {
   color: #c8cbca;
@@ -82,12 +90,11 @@
 .blog-article h1 {
   font-family: var(--display);
   font-size: clamp(34px, 4.6vw, 58px);
-  font-stretch: condensed;
   font-weight: 800;
   letter-spacing: 0.01em;
   line-height: 1.02;
   margin: 18px 0 18px;
-  text-transform: uppercase;
+  text-transform: none;
 }
 .blog-article h1 {
   text-transform: none;
@@ -112,12 +119,13 @@
   gap: 16px;
   letter-spacing: 0.08em;
   margin: 0 0 10px;
-  text-transform: uppercase;
+  text-transform: none;
 }
 .blog-meta a { color: var(--soft); }
 .blog-meta a:hover { color: var(--white); }
 
 .blog-grid {
+  animation: grid-enter 0.95s var(--ease-out) both;
   display: grid;
   gap: 18px;
   grid-template-columns: repeat(3, 1fr);
@@ -137,10 +145,11 @@
   flex-direction: column;
   gap: 12px;
   padding: 22px;
-  transition: border-color 0.25s ease, transform 0.25s ease;
+  transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
 }
 .blog-card:hover {
   border-color: var(--line-red);
+  box-shadow: 0 8px 0 rgba(211, 25, 29, 0.14);
   transform: translateY(-3px);
 }
 .blog-card h3 {
@@ -165,7 +174,7 @@
   color: var(--red-bright);
   font-size: 11px;
   letter-spacing: 0.12em;
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 /* типографика статьи */
@@ -179,10 +188,9 @@
   color: var(--white);
   font-family: var(--display);
   font-size: 28px;
-  font-stretch: condensed;
   line-height: 1.2;
   margin: 42px 0 16px;
-  text-transform: uppercase;
+  text-transform: none;
 }
 .prose h3 {
   color: var(--white);
@@ -192,8 +200,13 @@
 .prose p { margin: 0 0 18px; }
 .prose ul, .prose ol { margin: 0 0 18px 1.2em; padding: 0; }
 .prose li { margin: 0 0 8px; }
-.prose a { color: #fff; border-bottom: 1px solid var(--red); padding-bottom: 1px; }
-.prose a:hover { color: var(--red-bright); }
+.prose a {
+  border-bottom: 1px solid var(--red);
+  color: #fff;
+  padding-bottom: 1px;
+  transition: border-color 0.2s ease;
+}
+.prose a:hover { color: var(--red-bright); border-color: var(--red-bright); }
 .prose strong { color: #fff; }
 .prose table {
   border-collapse: collapse;
@@ -228,7 +241,7 @@
   font-size: 17px;
   letter-spacing: 0.06em;
   margin: 0 0 14px;
-  text-transform: uppercase;
+  text-transform: none;
 }
 .article-faq h3 {
   font-size: 16px;
@@ -245,7 +258,7 @@
   font-size: 13px;
   letter-spacing: 0.12em;
   margin: 0 0 14px;
-  text-transform: uppercase;
+  text-transform: none;
 }
 .related-articles ul { list-style: none; margin: 0; padding: 0; }
 .related-articles li { margin: 0 0 10px; }
@@ -258,6 +271,7 @@
   padding: 140px 4vw 90px;
 }
 .works-grid {
+  animation: grid-enter 0.95s var(--ease-out) both;
   display: grid;
   gap: 14px;
   grid-template-columns: repeat(4, 1fr);
@@ -274,14 +288,19 @@
   overflow: hidden;
   padding: 0;
   position: relative;
-  transition: border-color 0.2s ease;
+  transition: border-color 0.2s ease, transform 0.2s ease;
 }
-.works-cell:hover { border-color: var(--line-red); }
+.works-cell:hover {
+  border-color: var(--line-red);
+  transform: translateY(-3px);
+}
 .works-cell img {
   height: 100%;
   object-fit: cover;
+  transition: transform 0.4s var(--ease-out);
   width: 100%;
 }
+.works-cell:hover img { transform: scale(1.05); }
 .works-cell span {
   background: rgba(7, 9, 9, 0.72);
   bottom: 8px;
@@ -305,10 +324,9 @@
   color: var(--white);
   font-family: var(--display);
   font-size: 26px;
-  font-stretch: condensed;
   margin: 0 0 18px;
   padding-bottom: 14px;
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 /* каталог /oborudovanie */
@@ -321,11 +339,10 @@
 .page-title {
   font-family: var(--display);
   font-size: clamp(34px, 4.6vw, 58px);
-  font-stretch: condensed;
   font-weight: 800;
   line-height: 1.02;
   margin: 16px 0 18px;
-  text-transform: uppercase;
+  text-transform: none;
 }
 .compare-wrap {
   margin-top: 44px;
@@ -346,7 +363,12 @@
 }
 .compare-table th { background: var(--panel-2); color: #fff; }
 .compare-table tr:nth-child(even) td { background: rgba(255, 255, 255, 0.02); }
-.compare-table a { color: #fff; border-bottom: 1px solid var(--red); }
+.compare-table a {
+  border-bottom: 1px solid var(--red);
+  color: #fff;
+  transition: border-color 0.2s ease;
+}
+.compare-table a:hover { border-color: var(--red-bright); color: var(--red-bright); }
 
 /* страницы «О компании» и «Контакты» */
 .page-slim {
@@ -371,6 +393,11 @@
   border: 1px solid var(--line);
   border-radius: 8px;
   padding: 16px 18px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.contact-row:hover {
+  border-color: var(--red-bright);
+  transform: translateY(-2px);
 }
 .contact-row small {
   color: var(--muted);
@@ -378,7 +405,7 @@
   font-size: 11px;
   letter-spacing: 0.1em;
   margin-bottom: 6px;
-  text-transform: uppercase;
+  text-transform: none;
 }
 .contact-row a, .contact-row span {
   color: #fff;
@@ -431,6 +458,54 @@
 /* lightbox: скрытый через hidden */
 .lightbox-overlay[hidden] {
   display: none;
+}
+
+
+/* responsive fixes (desktop/tablet/mobile) */
+img { max-width: 100%; }
+
+@media (max-width: 768px) {
+  .form-row { grid-template-columns: 1fr; }
+  .platform-inputs { grid-template-columns: 1fr; }
+  .equipment-card img { height: 140px; }
+}
+
+@media (max-width: 480px) {
+  .equipment-card img { height: 120px; }
+  .platform-inputs { grid-template-columns: 1fr; }
+}
+
+
+/* responsive: trust-strip wrap on tablet/mobile */
+@media (max-width: 900px) {
+  .trust-strip { white-space: normal !important; flex-wrap: wrap !important; justify-content: center; gap: 12px 24px; padding: 14px 4vw; }
+  .trust-strip p { font-size: 13px; }
+}
+
+/* responsive: page containers padding on mobile */
+@media (max-width: 640px) {
+  .page-slim, .catalog-page, .faq-page, .blog-index, .blog-article, .works-page, .blog-article { padding-left: 20px; padding-right: 20px; }
+}
+
+
+/* prevent subpixel horizontal overflow on desktop */
+main, .section { overflow-x: hidden; }
+
+
+/* responsive: FAQ section on mobile/tablet */
+@media (max-width: 768px) {
+  .faq-section { gap: 24px; padding: 60px 20px; }
+  .faq-heading h2 { font-size: 32px; }
+  .faq-list button { min-height: 60px; grid-template-columns: 32px 1fr 28px; }
+  .faq-list button > b { font-size: 14px; }
+  .faq-answer p { margin: 0 20px 0 32px; font-size: 13px; }
+}
+@media (max-width: 480px) {
+  .faq-section { padding: 40px 16px; gap: 16px; }
+  .faq-heading h2 { font-size: 26px; }
+  .faq-list button { grid-template-columns: 28px 1fr 24px; min-height: 52px; }
+  .faq-list button > b { font-size: 13px; }
+  .faq-answer p { margin: 0 16px 0 28px; }
 }
 
 /* ═══ Адаптация: мобильная нижняя навигация и таблица сравнения ═══ */

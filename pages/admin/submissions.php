@@ -1,6 +1,6 @@
 <?php
 /**
- * Заявки: /admin/submissions — список, смена статуса, удаление.
+ * Заявки: /upravlenie/submissions — список, смена статуса, удаление.
  */
 
 declare(strict_types=1);
@@ -48,7 +48,7 @@ admin_page_start('Заявки');
   <h2 style="margin: 0">Заявки (<?= count($rows) ?>)</h2>
   <p class="admin-hint" style="margin: 8px 0 0">Фильтр:
     <?php foreach (['all' => 'все', 'new' => 'новые', 'viewed' => 'просмотренные', 'done' => 'выполненные'] as $key => $label): ?>
-    <a href="/admin/submissions?status=<?= e($key) ?>"<?= $filter === $key ? ' style="color: var(--red-bright)"' : '' ?>><?= e($label) ?></a><?= $key !== 'done' ? ' · ' : '' ?>
+    <a href="/upravlenie/submissions?status=<?= e($key) ?>"<?= $filter === $key ? ' style="color: var(--red-bright)"' : '' ?>><?= e($label) ?></a><?= $key !== 'done' ? ' · ' : '' ?>
     <?php endforeach; ?>
   </p>
 </div>
@@ -73,7 +73,7 @@ admin_page_start('Заявки');
       <td><?= e($row['stops']) ?></td>
       <td><?= e($row['city']) ?></td>
       <td>
-        <form method="post" action="/admin/submissions" style="margin: 0">
+        <form method="post" action="/upravlenie/submissions" style="margin: 0">
           <?= admin_csrf_field() ?>
           <input type="hidden" name="action" value="status">
           <input type="hidden" name="id" value="<?= (int) $row['id'] ?>">
@@ -85,7 +85,7 @@ admin_page_start('Заявки');
         </form>
       </td>
       <td>
-        <form method="post" action="/admin/submissions" style="margin: 0" onsubmit="return confirm('Удалить заявку #<?= (int) $row['id'] ?>?');">
+        <form method="post" action="/upravlenie/submissions" style="margin: 0" onsubmit="return confirm('Удалить заявку #<?= (int) $row['id'] ?>?');">
           <?= admin_csrf_field() ?>
           <input type="hidden" name="action" value="delete">
           <input type="hidden" name="id" value="<?= (int) $row['id'] ?>">

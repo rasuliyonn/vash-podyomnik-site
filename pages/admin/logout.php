@@ -1,6 +1,6 @@
 <?php
 /**
- * Выход из админки: /admin/logout
+ * Выход из админки: /upravlenie/logout
  */
 
 declare(strict_types=1);
@@ -8,5 +8,5 @@ declare(strict_types=1);
 require_once __DIR__ . '/../../lib/admin.php';
 
 admin_logout();
-header('Location: /admin/login', true, 303);
+header('Location: /upravlenie/login', true, 303);
 exit;

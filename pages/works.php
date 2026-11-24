@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../lib/render.php';
 require_once __DIR__ . '/../lib/db.php';
+require_once __DIR__ . '/../lib/works_images.php';
 
 $works = works_list();
 $count = count($works);
@@ -45,11 +46,16 @@ page_start(
     <div><strong>по РФ</strong><span>доставка<br>и монтаж</span></div>
   </div>
 
+  <div class="prose" style="max-width: none; font-size: 15px; margin-top: 28px">
+    <p>Каждая фотография на этой странице — реальный объект, сданный заказчику: от сервисного подъёмника для ресторана до шахтного подъёмника на производстве и открытой грузовой платформы на несколько тонн. Ни одного типового рендера или стоковой картинки.</p>
+    <p>Типы объектов в портфолио: склады и логистические центры, промышленные предприятия, торговые центры и магазины, автосервисы и техцентры, рестораны и кафе, гостиницы, частные дома и коттеджи. Под каждый объект мы проектируем решение индивидуально — по планировке, грузопотоку и имеющимся проёмам.</p>
+    <p>Хотите такой же результат на своём объекте? Оставьте заявку — инженер изучит планировку и предложит параметры подъёмника, зафиксированные в договоре. Нажмите на любое фото, чтобы увеличить его.</p>
+  </div>
+
   <div class="works-grid" data-works-grid>
     <?php foreach ($works as $i => $work): ?>
-    <button class="works-cell" type="button" data-lightbox-index="<?= $i ?>" aria-label="Открыть фото объекта <?= $i + 1 ?>">
-      <img src="<?= e($work['url']) ?>" alt="Выполненный объект <?= $i + 1 ?><?= $work['caption'] !== '' ? ' — ' . e($work['caption']) : '' ?>" loading="lazy">
-      <span><?= str_pad((string) ($i + 1), 2, '0', STR_PAD_LEFT) ?></span>
+    <button class="works-cell" type="button" data-lightbox-index="<?= $i ?>">
+      <?= works_picture($work['url'], 'Выполненный объект ' . ($i + 1) . ($work['caption'] !== '' ? ' — ' . $work['caption'] : '') . ': монтаж грузового подъёмника под ключ', '(max-width: 640px) 50vw, (max-width: 1000px) 33vw, 25vw', $i < 4) ?>
     </button>
     <?php endforeach; ?>
   </div>

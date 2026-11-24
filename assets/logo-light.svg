@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 356 64" role="img" aria-label="Ваш Подъёмник — грузовые подъёмники и лифты">
+  <rect x="11" y="12" width="6" height="32" fill="#171919"/>
+  <rect x="47" y="12" width="6" height="32" fill="#171919"/>
+  <path d="M32 3 L19.5 20.5 H27.5 V44 H36.5 V20.5 H44.5 Z" fill="#171919"/>
+  <rect x="6" y="49" width="52" height="9" fill="#D3191D"/>
+  <text x="74" y="29.5" font-family="'PT Sans Narrow','Arial Narrow',sans-serif" font-weight="700" font-size="25" letter-spacing="1.2" fill="#171919">ВАШ ПОДЪЁМНИК</text>
+  <text x="74" y="47.5" font-family="'PT Sans Narrow','Arial Narrow',sans-serif" font-weight="400" font-size="9" letter-spacing="2.15" fill="#5F6665">ГРУЗОВЫЕ ПОДЪЁМНИКИ И ЛИФТЫ</text>
+</svg>

@@ -14,7 +14,7 @@
   `llms.txt`, RSS блога (`/blog/rss.xml`), OG-обложка.
 - Форма заявки → SQLite `data/site.sqlite` (таблица `form_submissions`) +
   копирование текста заявки в буфер (работает и без JS).
-- Админка `/admin`: заявки (статусы), оборудование (тексты, хар-ки, фото, документы),
+- Админка `/upravlenie`: заявки (статусы), оборудование (тексты, хар-ки, фото, документы),
   работы (галерея: добавление/удаление/подписи), смена пароля.
 - Портфолио: при первом обращении `works_images` автозаполняется файлами `works/work-*.jpg`.
 
@@ -33,7 +33,7 @@
 3. Выставьте права (если нужно): `data` и `uploads` — `755` (или `775`).
 4. Откройте `https://ваш-домен/` — главная должна загрузиться.
    База `data/site.sqlite` и таблицы создадутся автоматически при первом запросе.
-5. Зайдите в `/admin`, пароль по умолчанию — **admin**. **Сразу** смените в «Настройки».
+5. Зайдите в `/upravlenie`, пароль по умолчанию — **admin**. **Сразу** смените в «Настройки».
 6. Проверьте `/sitemap.xml`, `/robots.txt`, отправьте их в Яндекс.Вебмастер и Google Search Console.
 
 ## Настройка через окружение (SetEnv в .htaccess)
@@ -62,11 +62,26 @@ start-php.bat
 Сайт также работает через `php -S` с роутером `router.dev.php`, который нужен
 только локально; на хостинг он безвреден.
 
-OG-обложка пересоздаётся: `php scripts/make-og-cover.php` (нужен PHP с GD).
+OG-обложка пересоздаётся: `python scripts/render-brand-pngs.py` и `python scripts/make-real-images.py` (нужны Pillow и шрифты из `scripts/fonts-ttf/`).
+
+Фото из `works/` оптимизируются скриптом `python scripts/works-optimize.py` (ресайз до 1920px, progressive JPEG q78, WebP, превью `-480` для srcset, обновляет `lib/works_image_meta.php`). После добавления новых фото в `/upravlenie/works` прогоните скрипт ещё раз и закоммитьте `works/*.webp`, `works/*-480.*` и `lib/works_image_meta.php`.
+
+После деплоя отправьте URL-ы в IndexNow (файл ключа `1c3fddc1f0b4408442f6c2e4f3f6f662.txt` лежит в корне сайта):
+
+```
+py -3 <путь-к-claude-seo>/scripts/runtime.py run indexnow_submit.py --host vashpodemnik61.ru \
+  --key 1c3fddc1f0b4408442f6c2e4f3f6f662 \
+  --key-location https://vashpodemnik61.ru/1c3fddc1f0b4408442f6c2e4f3f6f662.txt \
+  --urls-file seo-audit-2026-11-18/urls.txt
+```
+
+Отчёт о состоянии: полный SEO-аудит от 18.11.2026 с планом внедрения — `C:\Users\Max\Desktop\seo-audit-2026-11-18\audit-report.md` (лежит вне репозитория, в деплой не попадёт).
 
 ## Что здесь НЕ используется
 
 - Node.js/Next.js/Cloudflare Workers не нужны — сайт целиком на PHP.
+- `.openai/hosting.json` — остаток старого стека (Cloudflare D1/Workers);
+  для PHP-версии не используется, хранится в репозитории для истории.
 - MAX-бот: заявки копятся в админке; если нужен бот — нужен токен, обращайтесь.
 - Главные тексты сайта правятся в `lib/content.php` (не через админку).
 
@@ -80,7 +95,8 @@ OG-обложка пересоздаётся: `php scripts/make-og-cover.php` (�
 ├── lib/               # db, seo, render, content, equipment, faq, blog, admin
 │   └── articles/      # 16 статей блога (файл = статья)
 ├── pages/             # страницы (*.php) + pages/partials/calculator.php
-├── assets/            # style.css + site-ext.css + app.js + картинки
+├── assets/            # style.css + site-ext.css + app.js + cookie-banner.js + картинки
+├── docs/              # чек-лист соответствия законам РФ (регистрация в Роскомнадзоре и др. внешние обязательства)
 ├── works/             # 71 фото портфолио
 ├── uploads/           # файлы из админки (создаётся автоматически)
 └── data/              # site.sqlite (создаётся автоматически)

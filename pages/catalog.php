@@ -39,11 +39,11 @@ page_start(
   </nav>
 
   <h1>Каталог <em>оборудования</em></h1>
-  <p class="blog-lead">Не продаём «типовую коробку»: подбираем решение под ваш объект. Ниже — все типы оборудования, характеристики и сравнение. Инженер бесплатно изучит задачу и подготовит расчёт.</p>
+  <p class="blog-lead">Грузовой подъёмник — подъёмное оборудование для вертикального перемещения грузов между этажами; подбирается под параметры конкретного объекта. Не продаём «типовую коробку»: ниже — все типы оборудования, характеристики и сравнение. Инженер бесплатно изучит задачу и подготовит расчёт.</p>
 
   <div class="equipment-grid" style="margin-top: 40px">
     <?php foreach ($c['equipment_cards'] as $card): ?>
-    <a class="equipment-card" href="/equipment/<?= e($card['slug']) ?>" aria-label="Подробнее: <?= e($card['title']) ?>">
+    <a class="equipment-card" href="/equipment/<?= e($card['slug']) ?>">
       <div class="card-top">
         <span><?= e($card['number']) ?></span>
         <span aria-hidden="true">↗</span>

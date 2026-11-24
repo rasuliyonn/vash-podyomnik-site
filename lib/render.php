@@ -21,16 +21,30 @@ function nav_links(): array
 
 function logo_src(): string
 {
-    return '/assets/vash-podyomnik-logo.jpg';
+    return '/assets/logo.svg';
+}
+
+/**
+ * Знак компании, встроенный SVG (прозрачный фон, для тёмного интерфейса).
+ */
+function brand_mark_svg(): void
+{
+    ?><svg class="brand-mark" viewBox="0 0 64 64" width="46" height="46" aria-hidden="true" focusable="false">
+    <rect x="11" y="12" width="6" height="32" fill="#F4F4F2"/>
+    <rect x="47" y="12" width="6" height="32" fill="#F4F4F2"/>
+    <path d="M32 3 L19.5 20.5 H27.5 V44 H36.5 V20.5 H44.5 Z" fill="#F4F4F2"/>
+    <rect x="6" y="49" width="52" height="9" fill="#D3191D"/>
+  </svg><?php
 }
 
 function render_header(): void
 {
     $phone = CONTACT_PHONE;
     ?>
+<a class="skip-link" href="#top">Перейти к содержимому</a>
 <header class="site-header">
-  <a class="brand" href="/" aria-label="На главную">
-    <img class="brand-logo" src="<?= logo_src() ?>" alt="Логотип Ваш Подъёмник" width="50" height="50">
+  <a class="brand" href="/">
+    <?php brand_mark_svg(); ?>
     <span>
       <b>ВАШ ПОДЪЁМНИК</b>
       <small>Ростов-на-Дону · вся Россия</small>
@@ -59,7 +73,7 @@ function render_footer(): void
   <div class="footer-main">
     <div>
       <div class="brand footer-brand">
-        <img class="brand-logo" src="<?= logo_src() ?>" alt="Логотип Ваш Подъёмник" width="50" height="50">
+        <?php brand_mark_svg(); ?>
         <span>
           <b>ВАШ ПОДЪЁМНИК</b>
           <small>Проектирование · производство · монтаж</small>
@@ -88,6 +102,7 @@ function render_footer(): void
       <a href="/nashi-raboty">Наши работы</a>
       <a href="/voprosy">Вопросы и ответы</a>
       <a href="/blog">Блог</a>
+      <a href="/top-articles">Топ статей</a>
       <a href="/raschet">Расчёт стоимости</a>
       <a href="/kontakty">Контакты</a>
     </div>
@@ -123,16 +138,45 @@ function render_footer(): void
 
 function render_analytics(): void
 {
+    // Аналитика загружается только после явного согласия пользователя на cookie
+    // (см. баннер и cookie vashpodemnik61_cookie_ok=1). Без согласия скрипты не выполняются.
+    if (($_COOKIE['vashpodemnik61_cookie_ok'] ?? '') !== '1') {
+        return;
+    }
     if (YANDEX_METRIKA_ID !== '') {
         $id = (int) YANDEX_METRIKA_ID;
-        echo '<script>(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,"script","https://mc.yandex.ru/metrika/tag.js","ym");ym(' . $id . ',"init",{clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:true});</script>' . "\n";
+        // anonymizeIP — IP-адреса обезличиваются; webvisor отключён, чтобы не записывать
+        // ввод пользователей в формы (персональные данные) без отдельного согласия.
+        echo '<script>(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,"script","https://mc.yandex.ru/metrika/tag.js","ym");ym(' . $id . ',"init",{clickmap:true,trackLinks:true,accurateTrackBounce:true,anonymizeIP:true});</script>' . "\n";
         echo '<noscript><div><img src="https://mc.yandex.ru/watch/' . $id . '" style="position:absolute;left:-9999px" alt=""></div></noscript>' . "\n";
     }
     if (GA4_ID !== '') {
         $g = preg_replace('/[^A-Za-z0-9-]/', '', GA4_ID);
         echo '<script async src="https://www.googletagmanager.com/gtag/js?id=' . $g . '"></script>' . "\n";
-        echo '<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","' . $g . '");</script>' . "\n";
+        echo '<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","' . $g . '",{"anonymize_ip":true});</script>' . "\n";
     }
+}
+
+/**
+ * Уведомление о файлах cookie (см. assets/cookie-banner.js).
+ * Баннер скрывается, если пользователь уже принял их (cookie vashpodemnik61_cookie_ok).
+ * При нажатии на «Принять» записывается cookie на год — это согласие на использование
+ * анонимизированной статистики (см. Политику обработки персональных данных, раздел 8.3).
+ */
+function render_cookie_banner(): void
+{
+    if (isset($_COOKIE['vashpodemnik61_cookie_ok'])) {
+        return;
+    }
+    ?>
+    <div class="cookie-notice" id="cookieNotice" role="status" aria-live="polite">
+      <p>Этот сайт использует файлы cookie и подсчитывает статистику визитов (Яндекс.Метрика и Google Analytics с анонимизацией IP-адресов). Персональные данные не собираются и не передаются третьим лицам без необходимости исполнения договора.</p>
+      <div class="cookie-notice-actions">
+        <button type="button" class="cookie-notice-accept" id="cookieNoticeAccept">Принять</button>
+        <button type="button" class="cookie-notice-reject" id="cookieNoticeReject">Отклонить</button>
+      </div>
+    </div>
+    <?php
 }
 
 /**
@@ -162,8 +206,10 @@ function page_start(string $title, string $description, string $canonicalPath, a
 <?php if ($noindex): ?><meta name="robots" content="noindex, nofollow"><?php endif; ?>
 <meta name="theme-color" content="#070909">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="icon" href="<?= logo_src() ?>" type="image/jpeg">
-<link rel="apple-touch-icon" href="<?= logo_src() ?>">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preload" href="/assets/fonts/pt-sans-narrow-700-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/pt-sans-400-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/site.css?v=4">
 <meta property="og:type" content="<?= e($ogType) ?>">
 <meta property="og:locale" content="ru_RU">
 <meta property="og:site_name" content="<?= e(SITE_NAME) ?>">
@@ -179,8 +225,6 @@ function page_start(string $title, string $description, string $canonicalPath, a
 <meta name="twitter:image" content="<?= e($ogImage) ?>">
 <?php if (YANDEX_VERIFICATION !== ''): ?><meta name="yandex-verification" content="<?= e(YANDEX_VERIFICATION) ?>"><?php endif; ?>
 <?php if (GOOGLE_VERIFICATION !== ''): ?><meta name="google-site-verification" content="<?= e(GOOGLE_VERIFICATION) ?>"><?php endif; ?>
-<link rel="stylesheet" href="/assets/style.css">
-<link rel="stylesheet" href="/assets/site-ext.css">
 <link rel="alternate" type="application/rss+xml" title="Блог «Ваш Подъёмник»" href="<?= abs_url('/blog/rss.xml') ?>">
 <?php
     echo jsonld_script(organization_jsonld());
@@ -198,7 +242,9 @@ function page_start(string $title, string $description, string $canonicalPath, a
 function page_end(): void
 {
     render_footer();
+    render_cookie_banner();
     echo '<script src="/assets/app.js" defer></script>' . "\n";
+    echo '<script src="/assets/cookie-banner.js" defer></script>' . "\n";
     render_analytics();
     echo "</body>\n</html>\n";
 }

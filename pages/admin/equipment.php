@@ -1,6 +1,6 @@
 <?php
 /**
- * Оборудование: /admin/equipment — список типов + быстрые ссылки на редактирование.
+ * Оборудование: /upravlenie/equipment — список типов + быстрые ссылки на редактирование.
  */
 
 declare(strict_types=1);
@@ -30,7 +30,7 @@ admin_page_start('Оборудование');
       <td><?= count($item['images']) ?></td>
       <td><?= count($item['documents']) ?></td>
       <td>
-        <a class="admin-action-btn secondary" href="/admin/equipment/edit?slug=<?= e($slug) ?>">Редактировать</a>
+        <a class="admin-action-btn secondary" href="/upravlenie/equipment/edit?slug=<?= e($slug) ?>">Редактировать</a>
         <a class="admin-action-btn secondary" href="/equipment/<?= e($slug) ?>" target="_blank" rel="noopener">Смотреть ↗</a>
       </td>
     </tr>

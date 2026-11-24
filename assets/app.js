@@ -69,7 +69,9 @@
       height: val('height'),
       platformSize: platformSize(),
       city: val('city'),
-      stops: val('stops')
+      stops: val('stops'),
+      consentData: val('consentData'),   // отметка согласия (обязательна — см. submit.php)
+      consentNews: val('consentNews')
     };
 
     fetch('/submit', {
@@ -113,8 +115,11 @@
 
   function updateArrows() {
     if (!prev || !next) return;
-    prev.classList.toggle('works-arrow-hidden', strip.scrollLeft <= 4);
-    next.classList.toggle('works-arrow-hidden', strip.scrollLeft + strip.clientWidth >= strip.scrollWidth - 4);
+    // Сначала читаем геометрию, потом меняем классы: чтение после записи форсирует компоновку
+    var atStart = strip.scrollLeft <= 4;
+    var atEnd = strip.scrollLeft + strip.clientWidth >= strip.scrollWidth - 4;
+    prev.classList.toggle('works-arrow-hidden', atStart);
+    next.classList.toggle('works-arrow-hidden', atEnd);
   }
 
   if (prev) prev.addEventListener('click', function () { strip.scrollBy({ left: -SCROLL_BY, behavior: 'smooth' }); });

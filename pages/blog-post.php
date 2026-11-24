@@ -32,7 +32,7 @@ if ($articleFaq) {
 
 page_start(
     $article['title'],
-    $article['description'],
+    meta_truncate($article['description'], 160),
     '/blog/' . $article['slug'],
     ['jsonld' => $jsonld, 'og_type' => 'article']
 );
@@ -84,6 +84,18 @@ page_start(
     </ul>
   </div>
   <?php endif; ?>
+
+  <div class="related-articles">
+    <h2>По типу оборудования</h2>
+    <ul>
+      <li><a href="/equipment/shaftnye">Шахтные подъёмники</a></li>
+      <li><a href="/equipment/konsolnye">Консольные подъёмники</a></li>
+      <li><a href="/equipment/servisnye">Сервисные (малые грузовые) подъёмники</a></li>
+      <li><a href="/equipment/kottedzhnye">Коттеджные лифты</a></li>
+      <li><a href="/equipment/platformy">Грузовые платформы</a></li>
+      <li><a href="/oborudovanie">Все типы оборудования</a></li>
+    </ul>
+  </div>
 
   <div class="article-faq" style="margin-bottom: 0">
     <h2>Нужно решение под ваш объект?</h2>

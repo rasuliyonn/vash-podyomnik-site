@@ -40,9 +40,17 @@ $platformSize = trim((string) ($input['platformSize'] ?? $input['platform_size']
 $city = trim((string) ($input['city'] ?? ''));
 $stops = trim((string) ($input['stops'] ?? ''));
 
+// Серверная валидация согласия на обработку персональных данных: без отметки
+// (см. отметку `consentData` в pages/partials/calculator.php) заявка не принимается.
+$consentData = (bool) ($input['consentData'] ?? false);
+$consentNews = (bool) ($input['consentNews'] ?? false);
+
 $errors = [];
 if ($phone === '') {
     $errors[] = 'Укажите телефон для связи';
+}
+if (!$consentData) {
+    $errors[] = 'Необходимо отметить согласие на обработку персональных данных';
 }
 if (strlen($phone) > 40) {
     $errors[] = 'Телефон слишком длинный';

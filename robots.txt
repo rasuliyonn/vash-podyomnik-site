@@ -1,36 +1,48 @@
 # robots.txt — «Ваш Подъёмник»
-# Админка и служебные каталоги закрыты, остальное открыто.
-# Ниже — явные правила для ответных ИИ-краулеров (GEO).
-#
-# Решение о доступе к обучающей выборке (GPTBot, Google-Extended, CCBot)
-# оставляем вам: по умолчанию действует общее правило (Allow).
-# Чтобы закрыться от обучения, раскомментируйте блок ниже.
+# Служебный каталог /data закрыт. Админку НЕ закрываем Disallow: иначе поисковик
+# не увидит meta/X-Robots-Tag noindex на её страницах и URL может попасть в индекс
+# без описания. Админка закрыта noindex (meta + заголовок .htaccess) — этого достаточно.
+# Ниже — явные правила для ответных ИИ-краулеров (GEO). Content-Signal задаёт
+# предпочтение: поиск и ответы (ai-input) — да, обучение моделей (ai-train) — нет.
+# Content-Signal — это сигнал (Cloudflare Content Signals Policy), не
+# принудительное ограничение; Google его не учитывает.
 
 User-agent: *
+Content-Signal: search=yes, ai-input=yes, ai-train=no
 Allow: /
-Disallow: /admin
 Disallow: /data
 
 # Ответные ИИ-краулеры (поиск и ответы) — разрешаем явно
 User-agent: OAI-SearchBot
+Content-Signal: search=yes, ai-input=yes, ai-train=no
 Allow: /
 
 User-agent: ChatGPT-User
+Content-Signal: search=yes, ai-input=yes, ai-train=no
 Allow: /
 
 User-agent: PerplexityBot
+Content-Signal: search=yes, ai-input=yes, ai-train=no
 Allow: /
 
 User-agent: ClaudeBot
+Content-Signal: search=yes, ai-input=yes, ai-train=no
+Allow: /
+
+User-agent: Claude-SearchBot
+Content-Signal: search=yes, ai-input=yes, ai-train=no
 Allow: /
 
 User-agent: Amazonbot
+Content-Signal: search=yes, ai-input=yes, ai-train=no
 Allow: /
 
 User-agent: YandexBot
+Content-Signal: search=yes, ai-input=yes, ai-train=no
 Allow: /
 
 User-agent: Yandex
+Content-Signal: search=yes, ai-input=yes, ai-train=no
 Allow: /
 
 # Чтобы закрыть сайт от обучающих краулеров, добавьте:
@@ -41,4 +53,4 @@ Allow: /
 # User-agent: CCBot
 # Disallow: /
 
-Sitemap: https://vash-podyomnik.ru/sitemap.xml
+Sitemap: https://vashpodemnik61.ru/sitemap.xml

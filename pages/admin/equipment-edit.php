@@ -1,6 +1,6 @@
 <?php
 /**
- * Редактирование оборудования: /admin/equipment/edit?slug=shaftnye
+ * Редактирование оборудования: /upravlenie/equipment/edit?slug=shaftnye
  * Основные поля + списки (построчно) + фото и документы.
  */
 
@@ -195,13 +195,13 @@ try {
 
 admin_page_start('Оборудование: ' . $effective['title']);
 ?>
-<p><a class="admin-action-btn secondary" href="/admin/equipment">← К списку</a>
+<p><a class="admin-action-btn secondary" href="/upravlenie/equipment">← К списку</a>
    <a class="admin-action-btn secondary" href="/equipment/<?= e($slug) ?>" target="_blank" rel="noopener">Открыть карточку ↗</a></p>
 
 <?php if ($notice !== ''): ?><p class="admin-ok"><?= e($notice) ?></p><?php endif; ?>
 <?php if ($error !== ''): ?><p class="admin-error-box"><?= e($error) ?></p><?php endif; ?>
 
-<form method="post" action="/admin/equipment/edit?slug=<?= e($slug) ?>" class="admin-form">
+<form method="post" action="/upravlenie/equipment/edit?slug=<?= e($slug) ?>" class="admin-form">
   <?= admin_csrf_field() ?>
   <input type="hidden" name="action" value="save">
   <input type="hidden" name="slug" value="<?= e($slug) ?>">
@@ -255,7 +255,7 @@ admin_page_start('Оборудование: ' . $effective['title']);
       <img class="admin-thumb" src="<?= e($img['url']) ?>" alt="<?= e($img['caption']) ?>">
       <div class="admin-image-info">
         <small><?= e($img['caption'] !== '' ? $img['caption'] : 'без подписи') ?></small>
-        <form method="post" action="/admin/equipment/edit?slug=<?= e($slug) ?>" onsubmit="return confirm('Удалить фото?');">
+        <form method="post" action="/upravlenie/equipment/edit?slug=<?= e($slug) ?>" onsubmit="return confirm('Удалить фото?');">
           <?= admin_csrf_field() ?>
           <input type="hidden" name="action" value="delete_image">
           <input type="hidden" name="id" value="<?= (int) $img['id'] ?>">
@@ -266,7 +266,7 @@ admin_page_start('Оборудование: ' . $effective['title']);
     <?php endforeach; ?>
   </div>
   <?php endif; ?>
-  <form method="post" action="/admin/equipment/edit?slug=<?= e($slug) ?>" enctype="multipart/form-data" class="admin-form" style="margin-top: 14px">
+  <form method="post" action="/upravlenie/equipment/edit?slug=<?= e($slug) ?>" enctype="multipart/form-data" class="admin-form" style="margin-top: 14px">
     <?= admin_csrf_field() ?>
     <input type="hidden" name="action" value="upload_image">
     <input type="hidden" name="slug" value="<?= e($slug) ?>">
@@ -291,7 +291,7 @@ admin_page_start('Оборудование: ' . $effective['title']);
       <div class="admin-image-info" style="display: flex; align-items: center; gap: 12px">
         <a href="<?= e($doc['url']) ?>" target="_blank" rel="noopener"><?= e($doc['name']) ?></a>
         <small><?= e($doc['doc_type']) ?><?= $sizeKb > 0 ? ' · ' . ($sizeKb > 1024 ? number_format($sizeKb / 1024, 1) . ' МБ' : $sizeKb . ' КБ') : '' ?></small>
-        <form method="post" action="/admin/equipment/edit?slug=<?= e($slug) ?>" onsubmit="return confirm('Удалить документ?');" style="margin: 0">
+        <form method="post" action="/upravlenie/equipment/edit?slug=<?= e($slug) ?>" onsubmit="return confirm('Удалить документ?');" style="margin: 0">
           <?= admin_csrf_field() ?>
           <input type="hidden" name="action" value="delete_document">
           <input type="hidden" name="id" value="<?= (int) $doc['id'] ?>">
@@ -302,7 +302,7 @@ admin_page_start('Оборудование: ' . $effective['title']);
     <?php endforeach; ?>
   </div>
   <?php endif; ?>
-  <form method="post" action="/admin/equipment/edit?slug=<?= e($slug) ?>" enctype="multipart/form-data" class="admin-form" style="margin-top: 14px">
+  <form method="post" action="/upravlenie/equipment/edit?slug=<?= e($slug) ?>" enctype="multipart/form-data" class="admin-form" style="margin-top: 14px">
     <?= admin_csrf_field() ?>
     <input type="hidden" name="action" value="upload_document">
     <input type="hidden" name="slug" value="<?= e($slug) ?>">

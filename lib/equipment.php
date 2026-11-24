@@ -1,7 +1,7 @@
 <?php
 /**
  * Данные по типам оборудования (порт STATIC из Next-версии)
- * + наложение переопределений из SQLite (правки через /admin/equipment).
+ * + наложение переопределений из SQLite (правки через /upravlenie/equipment).
  */
 
 declare(strict_types=1);

@@ -1,6 +1,6 @@
 <?php
 /**
- * Вход в админку: /admin/login
+ * Вход в админку: /upravlenie/login
  */
 
 declare(strict_types=1);
@@ -8,7 +8,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../../lib/admin.php';
 
 if (admin_is_logged_in()) {
-    header('Location: /admin', true, 303);
+    header('Location: /upravlenie', true, 303);
     exit;
 }
 
@@ -20,7 +20,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     } else {
         $password = (string) ($_POST['password'] ?? '');
         if (admin_login($password)) {
-            header('Location: /admin', true, 303);
+            header('Location: /upravlenie', true, 303);
             exit;
         }
         $error = 'Неверный пароль.';
@@ -35,6 +35,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
 <meta name="robots" content="noindex, nofollow">
 <title>Вход — Админка «Ваш Подъёмник»</title>
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/fonts.css">
 <link rel="stylesheet" href="/assets/style.css">
 <link rel="stylesheet" href="/assets/site-ext.css">
 </head>
@@ -42,14 +43,19 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
 <div class="admin-login-page">
   <div class="admin-login-box">
     <div class="admin-login-brand">
-      <img class="brand-logo" src="/assets/vash-podyomnik-logo.jpg" alt="Логотип Ваш Подъёмник" width="50" height="50">
+      <svg class="brand-mark" viewBox="0 0 64 64" width="56" height="56" aria-hidden="true" focusable="false">
+        <rect x="11" y="12" width="6" height="32" fill="#F4F4F2"/>
+        <rect x="47" y="12" width="6" height="32" fill="#F4F4F2"/>
+        <path d="M32 3 L19.5 20.5 H27.5 V44 H36.5 V20.5 H44.5 Z" fill="#F4F4F2"/>
+        <rect x="6" y="49" width="52" height="9" fill="#D3191D"/>
+      </svg>
       <b>ВАШ ПОДЪЁМНИК</b>
       <small>админка сайта</small>
     </div>
     <?php if ($error !== ''): ?>
     <p class="admin-error-box" role="alert"><?= e($error) ?></p>
     <?php endif; ?>
-    <form method="post" action="/admin/login" class="admin-login-form">
+    <form method="post" action="/upravlenie/login" class="admin-login-form">
       <?= admin_csrf_field() ?>
       <label class="admin-label">
         <span class="admin-label-text">Пароль</span>

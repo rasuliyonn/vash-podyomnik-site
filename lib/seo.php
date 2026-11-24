@@ -22,6 +22,20 @@ function abs_url(string $path): string
     return SITE_URL . '/' . ltrim($path, '/');
 }
 
+/** Сокращение до $max символов по границе слова (для meta description). */
+function meta_truncate(string $s, int $max = 160): string
+{
+    if (mb_strlen($s) <= $max) {
+        return $s;
+    }
+    $cut = mb_substr($s, 0, $max);
+    $pos = mb_strrpos($cut, ' ');
+    if ($pos !== false && $pos >= (int) ($max * 0.6)) {
+        $cut = mb_substr($cut, 0, $pos);
+    }
+    return rtrim($cut, " \t\n\r\0\x0B,;.—–-«»()\"'") . '…';
+}
+
 /** Organization + LocalBusiness (единый граф сущности бренда). */
 function organization_jsonld(): array
 {
@@ -33,19 +47,28 @@ function organization_jsonld(): array
         'url' => SITE_URL . '/',
         'logo' => [
             '@type' => 'ImageObject',
-            'url' => abs_url('/assets/vash-podyomnik-logo.jpg'),
+            'url' => abs_url('/assets/apple-touch-icon.png'), // растр 180×180 (Google не индексирует SVG-логотипы надёжно)
+            'width' => 180,
+            'height' => 180,
         ],
         'image' => abs_url('/assets/og-cover.png'),
         'email' => CONTACT_EMAIL,
         'address' => [
             '@type' => 'PostalAddress',
-            'streetAddress' => 'ул. Промышленная, д. 12',
+            'streetAddress' => COMPANY_ADDRESS,
             'addressLocality' => COMPANY_CITY,
-            'postalCode' => '344000',
+            'addressRegion' => 'Ростовская область',
             'addressCountry' => 'RU',
         ],
         'taxID' => 'RU' . COMPANY_INN,
         'vatID' => COMPANY_INN,
+        'contactPoint' => [
+            '@type' => 'ContactPoint',
+            'contactType' => 'sales',
+            'email' => CONTACT_EMAIL,
+            'areaServed' => 'RU',
+            'availableLanguage' => ['Russian'],
+        ],
         'areaServed' => [
             '@type' => 'Country',
             'name' => 'Россия',
@@ -132,9 +155,17 @@ function service_jsonld(string $name, string $description, string $path): array
     ];
 }
 
+/** Число слов в тексте (unicode-aware, для Article wordCount). */
+function word_count_ru(string $html): int
+{
+    $text = html_entity_decode(strip_tags($html), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    $words = preg_split('/\s+/u', trim($text), -1, PREG_SPLIT_NO_EMPTY);
+    return is_array($words) ? count($words) : 0;
+}
+
 function article_jsonld(array $article): array
 {
-    return [
+    $data = [
         '@context' => 'https://schema.org',
         '@type' => 'Article',
         'mainEntityOfPage' => abs_url('/blog/' . $article['slug']),
@@ -143,11 +174,20 @@ function article_jsonld(array $article): array
         'datePublished' => $article['date'],
         'dateModified' => $article['dateModified'] ?? $article['date'],
         'inLanguage' => 'ru',
-        'image' => abs_url('/assets/og-cover.png'),
+        'image' => [
+            '@type' => 'ImageObject',
+            'url' => abs_url('/assets/og-cover.png'),
+            'width' => 1200,
+            'height' => 630,
+        ],
         'author' => ['@id' => SITE_URL . '/#organization'],
         'publisher' => ['@id' => SITE_URL . '/#organization'],
         'articleSection' => $article['category'] ?? 'Гайды',
     ];
+    if (!empty($article['body'])) {
+        $data['wordCount'] = word_count_ru((string) $article['body']);
+    }
+    return $data;
 }
 
 /** FAQPage из плоского списка [['q'=>..., 'a'=>...], ...] */

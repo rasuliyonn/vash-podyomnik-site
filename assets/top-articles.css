@@ -1,0 +1,167 @@
+/* =========================================================
+   ТОП СТАТЕЙ — раздел «Топ статьи» на главной и на /blog
+   Отличительный стиль (не похож на шаблонные подборки).
+   ========================================================= */
+
+.top-articles {
+  --gold: #c98e26;
+  background:
+    radial-gradient(900px 480px at 78% -10%, rgba(201, 142, 38, 0.09), transparent 55%),
+    #0c0a08;
+  border-bottom: 1px solid var(--line);
+  border-top: 1px solid var(--line);
+  padding: 108px 5.3vw 84px;
+}
+
+.top-articles-head {
+  margin-bottom: 64px;
+}
+
+.top-articles-heading {
+  color: var(--white);
+  font-family: var(--font-body);
+  font-size: clamp(40px, 6vw, 82px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 0.96;
+  margin: 0;
+  text-transform: none;
+}
+
+.top-articles-grid {
+  animation: top-articles-enter 0.9s var(--ease-out) both;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(5, 1fr);
+}
+
+@keyframes top-articles-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.top-article {
+  background: rgba(12, 10, 8, 0.5);
+  border: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 30px 20px 26px;
+  position: relative;
+  transition: border-color 0.25s ease, transform 0.25s ease, background 0.25s ease;
+}
+
+.top-article:hover {
+  background: rgba(12, 10, 8, 0.8);
+  border-color: var(--gold);
+  transform: translateY(-4px);
+}
+
+.top-article-num {
+  color: var(--gold);
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.top-article-cat {
+  color: var(--soft);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  margin-top: 6px;
+  text-transform: uppercase;
+}
+
+.top-article-title {
+  color: var(--white);
+  font-family: var(--font-body);
+  font-size: clamp(17px, 2.1vw, 25px);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.16;
+  margin: 10px 0 0;
+  text-transform: none;
+}
+
+.top-article-lead {
+  color: var(--soft);
+  font-size: 12px;
+  line-height: 1.62;
+  margin: 10px 0 0;
+  text-wrap: pretty;
+}
+
+.top-article-meta {
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  margin-top: auto;
+  text-transform: uppercase;
+}
+
+/* бейдж «Топ» на карточках блога (/blog) */
+.blog-card-head {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.blog-card-badge {
+  --gold: #c98e26;
+  border: 1px solid var(--gold);
+  border-radius: 3px;
+  color: var(--gold);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  padding: 3px 7px;
+  text-transform: uppercase;
+}
+
+/* адаптив: 5 → 3 → 2 → 1 колонки */
+@media (max-width: 1100px) {
+  .top-articles {
+    padding-inline: 22px;
+  }
+
+  .top-articles-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .top-article {
+    padding: 26px 18px 22px;
+  }
+
+  .top-article-title {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .top-articles {
+    padding-inline: 22px;
+  }
+
+  .top-articles-grid {
+    gap: 10px;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .top-article-title {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 420px) {
+  .top-articles-grid {
+    grid-template-columns: 1fr;
+  }
+}

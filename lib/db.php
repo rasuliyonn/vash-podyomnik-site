@@ -96,15 +96,19 @@ function db_migrate(PDO $pdo): void
         created_at TEXT NOT NULL DEFAULT (datetime('now'))
     )");
 
-    // Первый запуск: заполняем портфолио файлами из /works/*.jpg
+    // Первый запуск: заполняем портфолио файлами из /works/*.jpg (оригиналы, не превью)
     $count = (int) $pdo->query('SELECT COUNT(*) FROM works_images')->fetchColumn();
     if ($count === 0 && is_dir(WORKS_DIR)) {
         $files = array_merge(
             (array) glob(WORKS_DIR . '/*.jpg'),
             (array) glob(WORKS_DIR . '/*.jpeg'),
-            (array) glob(WORKS_DIR . '/*.png'),
-            (array) glob(WORKS_DIR . '/*.webp')
+            (array) glob(WORKS_DIR . '/*.png')
         );
+        // отбрасываем превью -480 и webp-версии: в портфолио только оригиналы
+        $files = array_values(array_filter($files, static function (string $file): bool {
+            $base = basename($file);
+            return !str_contains($base, '-480.');
+        }));
         sort($files, SORT_NATURAL);
         $stmt = $pdo->prepare('INSERT OR IGNORE INTO works_images (url, caption, sort_order) VALUES (?, ?, ?)');
         foreach ($files as $i => $file) {
@@ -125,8 +129,12 @@ function works_list(): array
         // БД недоступна — падаем на статический список
     }
     $fallback = [];
-    foreach ((array) glob(WORKS_DIR . '/*.jpg') as $i => $file) {
-        $fallback[] = ['url' => '/works/' . basename($file), 'caption' => ''];
+    foreach ((array) glob(WORKS_DIR . '/*.jpg') as $file) {
+        $base = basename($file);
+        if (str_contains($base, '-480.')) {
+            continue;
+        }
+        $fallback[] = ['url' => '/works/' . $base, 'caption' => ''];
     }
     sort($fallback);
     return $fallback;

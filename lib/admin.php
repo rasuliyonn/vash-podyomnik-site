@@ -14,9 +14,12 @@ require_once __DIR__ . '/seo.php';
 function admin_session(): void
 {
     if (session_status() !== PHP_SESSION_ACTIVE) {
-        session_set_cookie_params([
+        $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+            || (($_SERVER['SERVER_PORT'] ?? '') === '443');
+session_set_cookie_params([
             'lifetime' => 7 * 24 * 3600,
-            'path' => '/admin',
+            'path' => '/upravlenie',
+            'secure' => $isHttps,
             'httponly' => true,
             'samesite' => 'Lax',
         ]);
@@ -75,7 +78,7 @@ function require_admin(): void
 {
     if (!admin_is_logged_in()) {
         http_response_code(303);
-        header('Location: /admin/login');
+        header('Location: /upravlenie/login');
         exit;
     }
 }
@@ -135,20 +138,21 @@ function admin_page_start(string $title): void
 <meta name="robots" content="noindex, nofollow">
 <title><?= e($title) ?> — Админка «Ваш Подъёмник»</title>
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/fonts.css">
 <link rel="stylesheet" href="/assets/style.css">
 <link rel="stylesheet" href="/assets/site-ext.css">
 </head>
 <body class="admin-body">
 <div class="admin-root">
 <header class="admin-header">
-  <a href="/admin" class="admin-logout-btn" style="background: var(--red); color: #fff">Админка</a>
+  <a href="/upravlenie" class="admin-logout-btn" style="background: var(--red); color: #fff">Админка</a>
   <nav class="admin-nav" aria-label="Разделы админки">
-    <a href="/admin/submissions">Заявки</a>
-    <a href="/admin/equipment">Оборудование</a>
-    <a href="/admin/works">Работы</a>
-    <a href="/admin/settings">Настройки</a>
+    <a href="/upravlenie/submissions">Заявки</a>
+    <a href="/upravlenie/equipment">Оборудование</a>
+    <a href="/upravlenie/works">Работы</a>
+    <a href="/upravlenie/settings">Настройки</a>
   </nav>
-  <a class="admin-logout-btn" href="/admin/logout">Выйти</a>
+  <a class="admin-logout-btn" href="/upravlenie/logout">Выйти</a>
 </header>
 <main class="admin-main">
 <?php

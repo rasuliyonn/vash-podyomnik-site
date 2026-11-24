@@ -10,18 +10,20 @@
 
 declare(strict_types=1);
 
-define('SITE_URL', rtrim(getenv('SITE_URL') ?: 'https://vash-podyomnik.ru', '/'));
+define('SITE_URL', rtrim(getenv('SITE_URL') ?: 'https://vashpodemnik61.ru', '/'));
 define('SITE_NAME', 'Ваш Подъёмник');
 define('SITE_BUILD_DATE', '2026-11-18');
 
-define('CONTACT_EMAIL', getenv('CONTACT_EMAIL') ?: 'info@vash-podyomnik.ru');
-define('CONTACT_PHONE', getenv('CONTACT_PHONE') ?: '');   // пусто — блок телефона не выводится
+define('CONTACT_EMAIL', getenv('CONTACT_EMAIL') ?: 'info@vashpodemnik61.ru');
+define('CONTACT_PHONE', getenv('CONTACT_PHONE') ?: '');   // пусто — блок телефона не выводится;
+                                                          // рекомендуется подставить РЕАЛЬНЫЙ номер (не выдумывать) —
+                                                          // подробности — docs/rf-compliance.md
 define('CONTACT_HOURS', getenv('CONTACT_HOURS') ?: '');   // например: 'Пн–Пт 08:00–18:00'
 
-define('COMPANY_NAME', 'ООО «Ваш Подъёмник»');
-define('COMPANY_INN', '6163212345');
-define('COMPANY_OGRN', '1236100000000');
-define('COMPANY_ADDRESS', '344000, г. Ростов-на-Дону, ул. Промышленная, д. 12');
+define('COMPANY_NAME', 'ИП «Ваш Подъёмник»');
+define('COMPANY_INN', '6163212345');      // ВНИМАНИЕ: для ИП ИНН физлица — 12 цифр; текущее значение 10 цифр (формат ООО) — замените на реальный ИНН из ЕГРИП
+define('COMPANY_OGRN', '1236100000000');  // ВНИМАНИЕ: для ИП ОГРНИП — 15 цифр; текущее значение 13 цифр (формат ООО) — замените на реальный ОГРНИП из ЕГРИП
+define('COMPANY_ADDRESS', 'г. Ростов-на-Дону');   // адрес оператора (проверьте формулировку, если отличается)
 define('COMPANY_CITY', 'Ростов-на-Дону');
 
 define('DATA_DIR', __DIR__ . '/data');

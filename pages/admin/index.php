@@ -1,6 +1,6 @@
 <?php
 /**
- * Дашборд админки: /admin
+ * Дашборд админки: /upravlenie
  */
 
 declare(strict_types=1);
@@ -32,27 +32,27 @@ $defaultPassword = admin_password_hash() === null;
 admin_page_start('Панель');
 ?>
 <?php if ($defaultPassword): ?>
-<p class="admin-warn">Используется пароль по умолчанию. <a href="/admin/settings">Смените его в настройках</a> — иначе админка открыта любому.</p>
+<p class="admin-warn">Используется пароль по умолчанию. <a href="/upravlenie/settings">Смените его в настройках</a> — иначе админка открыта любому.</p>
 <?php endif; ?>
 
 <div class="admin-dashboard-grid">
-  <a class="admin-card" href="/admin/submissions">
-    <span class="admin-card-icon">📥</span>
+  <a class="admin-card" href="/upravlenie/submissions">
+    <span class="admin-card-icon"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg></span>
     <b>Заявки</b>
     <small><?= $newCount ?> новых · <?= $totalCount ?> всего</small>
   </a>
-  <a class="admin-card" href="/admin/equipment">
-    <span class="admin-card-icon">🏗️</span>
+  <a class="admin-card" href="/upravlenie/equipment">
+    <span class="admin-card-icon"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a4.5 4.5 0 0 0-6 5.6L3 17.6a2.1 2.1 0 0 0 3 3l5.7-5.7a4.5 4.5 0 0 0 5.6-6l-2.8 2.8-2.6-2.6 2.8-2.8z"/></svg></span>
     <b>Оборудование</b>
     <small><?= $equipmentCount ?> типов · карточки и фото</small>
   </a>
-  <a class="admin-card" href="/admin/works">
-    <span class="admin-card-icon">🖼️</span>
+  <a class="admin-card" href="/upravlenie/works">
+    <span class="admin-card-icon"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 15-4.35-4.35a1.5 1.5 0 0 0-2.12 0L7 18"/></svg></span>
     <b>Наши работы</b>
     <small><?= $worksCount ?> фото в портфолио</small>
   </a>
   <a class="admin-card" href="/blog" target="_blank" rel="noopener">
-    <span class="admin-card-icon">✍️</span>
+    <span class="admin-card-icon"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L10 16l-4 1 1-4L16.5 3.5z"/></svg></span>
     <b>Блог</b>
     <small><?= $articlesCount ?> статей · открыть сайт ↗</small>
   </a>
@@ -81,7 +81,7 @@ admin_page_start('Панель');
   </tbody>
 </table>
 </div>
-<p style="margin-top: 14px"><a class="admin-action-btn secondary" href="/admin/submissions">Все заявки →</a></p>
+<p style="margin-top: 14px"><a class="admin-action-btn secondary" href="/upravlenie/submissions">Все заявки →</a></p>
 <?php endif; ?>
 <?php
 admin_page_end();

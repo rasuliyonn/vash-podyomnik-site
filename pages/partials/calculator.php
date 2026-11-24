@@ -12,7 +12,7 @@ $cc = site_content()['calculator'];
 ?>
 <section class="calculator" id="calculation">
   <div class="calculator-intro">
-    <span class="section-index">/ 05</span>
+
     <p><?= e($cc['sectionLabel']) ?></p>
     <h2><?= e($cc['heading']) ?></h2>
     <p><?= e($cc['intro']) ?></p>

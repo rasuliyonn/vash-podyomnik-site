@@ -33,6 +33,26 @@ function blog_find(string $slug): ?array
     return $articles[$slug] ?? null;
 }
 
+/**
+ * Статьи-флаги «ТОП СТАТЕЙ» (featured articles). blog_articles() уже
+ * отсортирована по дате DESC, поэтому ТОП-список — свежие сначала.
+ */
+function blog_top_articles(): array
+{
+    $tops = [];
+    foreach (blog_articles() as $article) {
+        if (!empty($article['top'])) {
+            $tops[] = $article;
+        }
+    }
+    return $tops;
+}
+
+function article_is_top(array $article): bool
+{
+    return !empty($article['top']);
+}
+
 function blog_categories(): array
 {
     $cats = [];

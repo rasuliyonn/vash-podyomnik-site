@@ -17,7 +17,7 @@ page_start(
 );
 ?>
 <main class="not-found" id="top">
-  <p class="section-index" style="justify-content: center">/ ОШИБКА</p>
+
   <h1>404</h1>
   <p class="blog-lead" style="margin: 0 auto 26px">Такой страницы не существует. Возможно, ссылка устарела — вот полезные разделы:</p>
   <p>
