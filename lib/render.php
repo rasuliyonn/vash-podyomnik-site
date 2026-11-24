@@ -47,7 +47,7 @@ function render_header(): void
   <?php foreach (nav_links() as $link): ?>
   <a href="<?= e($link['href']) ?>"><?= e($link['label']) ?></a>
   <?php endforeach; ?>
-  <a href="/raschet" class="mobile-nav-cta">Получить расчёт</a>
+  <a href="/raschet" class="mobile-nav-cta"><span><span class="nav-cta-long">Получить </span>расчёт</span></a>
 </nav>
 <?php
 }

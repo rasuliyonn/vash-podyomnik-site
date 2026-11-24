@@ -432,3 +432,101 @@
 .lightbox-overlay[hidden] {
   display: none;
 }
+
+/* ═══ Адаптация: мобильная нижняя навигация и таблица сравнения ═══ */
+
+/* 6 пунктов нижнего меню должны помещаться в 320–414px без обрезки */
+@media (max-width: 480px) {
+  .mobile-bottom-nav a {
+    font-size: 10px;
+    letter-spacing: 0;
+    padding: 8px 2px;
+  }
+}
+
+/* Таблица сравнения на телефоне — карточки вместо горизонтальной прокрутки */
+@media (max-width: 640px) {
+  .compare-wrap {
+    margin-top: 28px;
+    overflow: visible;
+  }
+
+  .compare-table,
+  .compare-table tbody,
+  .compare-table tr,
+  .compare-table td {
+    display: block;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .compare-table thead {
+    display: none;
+  }
+
+  .compare-table tr {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    margin-bottom: 14px;
+  }
+
+  .compare-table td,
+  .compare-table tr:nth-child(even) td {
+    background: none;
+    border: 0;
+    border-top: 1px solid var(--line);
+    display: grid;
+    gap: 4px;
+    grid-template-columns: 1fr;
+    padding: 10px 14px;
+  }
+
+  .compare-table td:first-child {
+    border-top: 0;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .compare-table td::before {
+    color: var(--muted);
+    content: attr(data-label);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .compare-table td:first-child::before {
+    content: none;
+  }
+}
+
+/* Очень узкие экраны (≤360px): шесть пунктов нижнего меню помещаются только так */
+@media (max-width: 360px) {
+  .mobile-bottom-nav a {
+    font-size: 9px;
+  }
+
+  .mobile-bottom-nav .nav-cta-long {
+    display: none;
+  }
+}
+
+/* Узкие экраны: самое длинное слово заголовка не должно выталкивать колонку за край */
+@media (max-width: 400px) {
+  .object-copy h2 {
+    font-size: 32px;
+  }
+
+  .footer-brand b {
+    font-size: 20px;
+  }
+
+  footer h2 {
+    font-size: 40px;
+  }
+
+  .primary-button {
+    gap: 14px;
+    padding: 0 18px 0 22px;
+  }
+}
