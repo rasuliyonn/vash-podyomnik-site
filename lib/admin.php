@@ -156,7 +156,6 @@ function admin_csrf_check(): bool
 
 function admin_page_start(string $title): void
 {
-    $user_ok = true;
     ?>
 <!doctype html>
 <html lang="ru">
