@@ -64,7 +64,8 @@ admin_page_start('Настройки');
   <h2 class="admin-list-header">Конфигурация через окружение</h2>
   <p class="admin-hint">На shared-хостинге переменные задаются через <code>SetEnv</code> в <code>.htaccess</code> (пример — в файле <code>.htaccess</code> в корне) или в панели хостинга. Доступны:</p>
   <ul class="admin-hint" style="line-height: 1.9">
-    <li><code>CONTACT_PHONE</code> — телефон на сайте и в schema.org (пусто = не показываем)</li>
+    <li><code>CONTACT_PHONE</code> — телефон на сайте и в schema.org (по умолчанию +7 (952) 603-57-85; пусто = не показываем)</li>
+    <li><code>MAX_PROFILE_URL</code> — ссылка на профиль в мессенджере MAX (<code>https://max.ru/u/…</code>)</li>
     <li><code>CONTACT_HOURS</code> — часы работы</li>
     <li><code>YANDEX_METRIKA_ID</code> — счётчик Яндекс.Метрики</li>
     <li><code>GA4_ID</code> — Google Analytics 4</li>

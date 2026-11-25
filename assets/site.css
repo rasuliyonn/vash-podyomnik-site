@@ -227,7 +227,7 @@ main {
 .site-header nav {
   align-items: center;
   display: flex;
-  gap: 50px;
+  gap: 38px;
 }
 
 .site-header nav a {
@@ -239,6 +239,26 @@ main {
 .site-header nav a:hover {
   color: var(--red-bright);
   transform: translateY(-1px);
+}
+
+.header-actions {
+  align-items: center;
+  display: flex;
+  gap: 18px;
+  justify-self: end;
+}
+
+.header-phone {
+  color: var(--white);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+
+.header-phone:hover {
+  color: var(--red-bright);
 }
 
 .header-cta {

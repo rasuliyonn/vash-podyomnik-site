@@ -24,6 +24,21 @@ function logo_src(): string
     return '/assets/logo.svg';
 }
 
+/** href для tel: — из отображаемого телефона (+7 (952) 603-57-85 → +79526035785). */
+function tel_href(string $phone): string
+{
+    return 'tel:' . preg_replace('/[^+0-9]/', '', $phone);
+}
+
+/**
+ * Ссылка на мессенджер MAX. Прямой ссылки «по номеру» у MAX нет, поэтому без
+ * MAX_PROFILE_URL ведём на веб-версию мессенджера (там контакт ищется по номеру).
+ */
+function max_href(): string
+{
+    return MAX_PROFILE_URL !== '' ? MAX_PROFILE_URL : MAX_WEB_URL;
+}
+
 /**
  * Знак компании, встроенный SVG (прозрачный фон, для тёмного интерфейса).
  */
@@ -39,7 +54,6 @@ function brand_mark_svg(): void
 
 function render_header(): void
 {
-    $phone = CONTACT_PHONE;
     ?>
 <a class="skip-link" href="#top">Перейти к содержимому</a>
 <header class="site-header">
@@ -55,7 +69,10 @@ function render_header(): void
     <a href="<?= e($link['href']) ?>"><?= e($link['label']) ?></a>
     <?php endforeach; ?>
   </nav>
-  <a class="header-cta" href="/raschet"><span class="header-cta-label"><span class="header-cta-long">Получить </span>расчёт</span><span class="header-cta-arrow" aria-hidden="true">↗</span></a>
+  <div class="header-actions">
+    <?php if (CONTACT_PHONE !== ''): ?><a class="header-phone" href="<?= e(tel_href(CONTACT_PHONE)) ?>"><?= e(CONTACT_PHONE) ?></a><?php endif; ?>
+    <a class="header-cta" href="/raschet"><span class="header-cta-label"><span class="header-cta-long">Получить </span>расчёт</span><span class="header-cta-arrow" aria-hidden="true">↗</span></a>
+  </div>
 </header>
 <nav class="mobile-bottom-nav" aria-label="Мобильная навигация">
   <?php foreach (nav_links() as $link): ?>
@@ -118,7 +135,8 @@ function render_footer(): void
         <?= e(COMPANY_NAME) ?><br>
         ИНН <?= e(COMPANY_INN) ?> · ОГРН <?= e(COMPANY_OGRN) ?><br>
         <?= e(COMPANY_ADDRESS) ?>
-        <?php if (CONTACT_PHONE !== ''): ?><br><a href="tel:<?= e(preg_replace('/[^+0-9]/', '', CONTACT_PHONE)) ?>"><?= e(CONTACT_PHONE) ?></a><?php endif; ?>
+        <?php if (CONTACT_PHONE !== ''): ?><br><a href="<?= e(tel_href(CONTACT_PHONE)) ?>"><?= e(CONTACT_PHONE) ?></a><?php endif; ?>
+        <?php if (MAX_PROFILE_URL !== ''): ?><br><a href="<?= e(MAX_PROFILE_URL) ?>" rel="noopener">Мессенджер MAX</a><?php endif; ?>
         <?php if (CONTACT_HOURS !== ''): ?><br><?= e(CONTACT_HOURS) ?><?php endif; ?>
       </p>
     </div>
@@ -209,8 +227,8 @@ function page_start(string $title, string $description, string $canonicalPath, a
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="preload" href="/assets/fonts/pt-sans-narrow-700-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/pt-sans-400-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/site.css?v=4">
-<link rel="stylesheet" href="/assets/responsive.css?v=1">
+<link rel="stylesheet" href="/assets/site.css?v=5">
+<link rel="stylesheet" href="/assets/responsive.css?v=2">
 <meta property="og:type" content="<?= e($ogType) ?>">
 <meta property="og:locale" content="ru_RU">
 <meta property="og:site_name" content="<?= e(SITE_NAME) ?>">

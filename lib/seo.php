@@ -86,6 +86,9 @@ function organization_jsonld(): array
     if (CONTACT_PHONE !== '') {
         $org['telephone'] = CONTACT_PHONE;
     }
+    if (MAX_PROFILE_URL !== '') {
+        $org['sameAs'] = [MAX_PROFILE_URL];
+    }
     if (CONTACT_HOURS !== '') {
         $org['openingHours'] = CONTACT_HOURS;
     }

@@ -16,7 +16,7 @@ $jsonld = [
 
 page_start(
     'Контакты в Ростове-на-Дону',
-    'Контакты «Ваш Подъёмник»: адрес производства в Ростове-на-Дону, email info@vashpodemnik61.ru. Расчёт онлайн.',
+    'Контакты «Ваш Подъёмник»: телефон +7 (952) 603-57-85, мессенджер MAX, email info@vashpodemnik61.ru, производство в Ростове-на-Дону. Расчёт онлайн.',
     '/kontakty',
     ['jsonld' => $jsonld]
 );
@@ -42,7 +42,13 @@ page_start(
       <?php if (CONTACT_PHONE !== ''): ?>
       <div class="contact-row">
         <small>Телефон</small>
-        <a href="tel:<?= e(preg_replace('/[^+0-9]/', '', CONTACT_PHONE)) ?>"><?= e(CONTACT_PHONE) ?></a>
+        <a href="<?= e(tel_href(CONTACT_PHONE)) ?>"><?= e(CONTACT_PHONE) ?></a>
+      </div>
+      <?php endif; ?>
+      <?php if (CONTACT_PHONE !== '' || MAX_PROFILE_URL !== ''): ?>
+      <div class="contact-row">
+        <small>Мессенджер MAX</small>
+        <a href="<?= e(max_href()) ?>" rel="noopener"><?= e(CONTACT_PHONE !== '' ? CONTACT_PHONE : 'Написать в MAX') ?></a>
       </div>
       <?php endif; ?>
       <?php if (CONTACT_HOURS !== ''): ?>

@@ -66,7 +66,8 @@ RewriteRule ^ https://vashpodemnik61.ru%{REQUEST_URI} [R=301,L]
 
 # ── Пример переопределения настроек через окружение (secrets out of repo) ──
 # Раскомментируйте и задайте реальные значения:
-# SetEnv CONTACT_PHONE "+7 (863) 000-00-00"
+# SetEnv CONTACT_PHONE "+7 (952) 603-57-85"
+# SetEnv MAX_PROFILE_URL "https://max.ru/u/код-профиля"
 # SetEnv CONTACT_HOURS "Пн–Пт 08:00–18:00, Сб 09:00–15:00"
 # SetEnv YANDEX_METRIKA_ID "12345678"
 # SetEnv GA4_ID "G-XXXXXXXXXX"
