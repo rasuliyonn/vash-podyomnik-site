@@ -31,24 +31,9 @@ RewriteCond %{HTTP_HOST} ^www\.vashpodemnik61\.ru$ [NC]
 RewriteRule ^ https://vashpodemnik61.ru%{REQUEST_URI} [R=301,L]
 
 # ── Безопасные заголовки ──────────────────────────────────────────────────
-<IfModule mod_headers.c>
-  Header set X-Content-Type-Options "nosniff"
-  Header set X-Frame-Options "SAMEORIGIN"
-  Header set Referrer-Policy "strict-origin-when-cross-origin"
-  Header set Permissions-Policy "camera=(), microphone=(), geolocation=()"
-  Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
-  # CSP: same-origin + только Яндекс.Метрика (Google Analytics/GTM не используются).
-  # 'unsafe-inline' для script/style нужен инлайн-скриптам (speculationrules, инициализация счётчиков)
-  # и inline style=""; внешние чужие origins не разрешены. upgrade-insecure-requests НЕ ставим,
-  # иначе ломается http:// локальное превью.
-  Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://mc.yandex.ru; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://mc.yandex.ru; font-src 'self'; connect-src 'self' https://mc.yandex.ru; frame-src https://www.youtube.com https://player.vimeo.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'"
-  Header set X-Permitted-Cross-Domain-Policies "none"
-  # Админка не индексируется
-  <If "%{REQUEST_URI} =~ m#^/upravlenie#">
-    Header set X-Robots-Tag "noindex, nofollow"
-    Header set Cache-Control "no-store, max-age=0"
-  </If>
-</IfModule>
+# Заголовки безопасности отправляет PHP (index.php::send_security_headers):
+# на части shared-хостингов mod_headers недоступен, а дублирование заголовков
+# (PHP + .htaccess) недопустимо. Статика получает HSTS из ответа HTML-страницы.
 
 # ── Кеширование статики ───────────────────────────────────────────────────
 <IfModule mod_expires.c>
