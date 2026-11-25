@@ -45,7 +45,6 @@ SetEnv CONTACT_PHONE "+7 (952) 603-57-85"
 SetEnv MAX_PROFILE_URL "https://max.ru/u/код-профиля"
 SetEnv CONTACT_HOURS "Пн–Пт 08:00–18:00"
 SetEnv YANDEX_METRIKA_ID "12345678"
-SetEnv GA4_ID "G-XXXXXXXXXX"
 SetEnv YANDEX_VERIFICATION "код-из-вебмастера"
 SetEnv GOOGLE_VERIFICATION "код-из-search-console"
 ```
@@ -103,7 +102,7 @@ py -3 <путь-к-claude-seo>/scripts/runtime.py run indexnow_submit.py --host 
 │   └── articles/      # 16 статей блога (файл = статья)
 ├── pages/             # страницы (*.php) + pages/partials/calculator.php
 ├── assets/            # site.css (публичные страницы) + responsive.css (адаптив) +
-│                      # style.css/site-ext.css (админка) + app.js + cookie-banner.js + картинки
+│                      # style.css/site-ext.css (админка) + app.js + cookie-consent.js + картинки
 ├── docs/              # чек-лист соответствия законам РФ (регистрация в Роскомнадзоре и др. внешние обязательства)
 ├── works/             # 71 фото портфолио
 ├── uploads/           # файлы из админки (создаётся автоматически)
