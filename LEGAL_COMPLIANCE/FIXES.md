@@ -37,7 +37,7 @@
 | pages/admin/submissions.php | Поиск, согласие, срок хранения, каскадное удаление |
 | pages/admin/index.php | Обращения по ПД, purge |
 | pages/admin/consent-requests.php | Новый раздел обработки обращений |
-| .htaccess | Закрыты docs/scripts/seo-content/LEGAL_COMPLIANCE, uploads, CSP, no-store |
+| .htaccess | Закрыты docs/scripts/seo-content/LEGAL_COMPLIANCE; security-заголовки отправляет PHP (без дублей) |
 | uploads/.htaccess, data/.htaccess | Новые: запрет исполнения и доступа |
 | .well-known/security.txt | Policy → /privacy, Canonical, Expires |
 | README.md, docs/rf-compliance.md | Актуализированы |
@@ -116,7 +116,8 @@
 - data/.htaccess: Require all denied;
 - .htaccess: закрыты docs/scripts/seo-content/LEGAL_COMPLIANCE, .git, start-php.bat, router.dev.php;
 - Options -Indexes;
-- админка no-store;
+- админка no-store (PHP);
+- security-заголовки формируются в PHP, .htaccess их не дублирует (иначе браузер получал два X-Frame-Options/CSP);
 - security.txt исправлен.
 
 ## 3. Проверка

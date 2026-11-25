@@ -11,7 +11,7 @@
 | CSRF | был в админке | сохранён; публичная форма защищена honeypot/лимитом |
 | Загрузки | whitelist расширений и getimagesize | сохранено + uploads/.htaccess с запретом PHP |
 | Служебные каталоги | data/lib/pages | + docs/scripts/seo-content/LEGAL_COMPLIANCE/.git, Options -Indexes |
-| Заголовки | CSP с GTM/GA, HSTS, nosniff | CSP без Google, frame-src, X-Permitted-Cross-Domain-Policies |
+| Заголовки | CSP с GTM/GA, дубли PHP + .htaccess | CSP без Google, frame-src, X-Permitted-Cross-Domain-Policies; отправляются только из PHP |
 | Ошибки | могли выводиться | display_errors=0, log_errors=1 |
 | Формы | нет лимита, ошибки скрывались | rate limit, honeypot, валидация, честный статус |
 
