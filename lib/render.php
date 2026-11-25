@@ -1,12 +1,14 @@
 <?php
 /**
- * Общий каркас страниц: <head>, шапка, футер, аналитика.
+ * Общий каркас страниц: <head>, шапка, футер, аналитика, cookie.
  */
 
 declare(strict_types=1);
 
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/seo.php';
+require_once __DIR__ . '/company.php';
+require_once __DIR__ . '/consent.php';
 
 function nav_links(): array
 {
@@ -17,6 +19,13 @@ function nav_links(): array
         ['href' => '/blog', 'label' => 'Блог'],
         ['href' => '/kontakty', 'label' => 'Контакты'],
     ];
+}
+
+/** Текущий путь без query string (для форм и журнала согласий). */
+function current_path(): string
+{
+    $path = parse_url((string) ($_SERVER['REQUEST_URI'] ?? '/'), PHP_URL_PATH);
+    return is_string($path) && $path !== '' ? $path : '/';
 }
 
 function logo_src(): string
@@ -83,6 +92,21 @@ function render_header(): void
 <?php
 }
 
+/** Список юридических документов (единый источник для футера и страниц). */
+function legal_document_links(): array
+{
+    return [
+        ['href' => '/privacy', 'label' => 'Политика обработки персональных данных'],
+        ['href' => '/consent', 'label' => 'Согласие на обработку персональных данных'],
+        ['href' => '/cookies', 'label' => 'Политика использования cookie'],
+        ['href' => '/terms', 'label' => 'Пользовательское соглашение'],
+        ['href' => '/offer', 'label' => 'Условия заказа, оплаты и возврата'],
+        ['href' => '/marketing', 'label' => 'Согласие на рекламные сообщения'],
+        ['href' => '/requisites', 'label' => 'Реквизиты и информация о продавце'],
+        ['href' => '/otzyv-soglasiya', 'label' => 'Отозвать согласие / обращение по ПД'],
+    ];
+}
+
 function render_footer(): void
 {
     ?>
@@ -107,6 +131,7 @@ function render_footer(): void
     <div>
       <h3>Оборудование</h3>
       <a href="/oborudovanie">Каталог оборудования</a>
+      <a href="/gruzovye-podemniki-po-proektu">По индивидуальному проекту</a>
       <a href="/equipment/shaftnye">Шахтные подъёмники</a>
       <a href="/equipment/konsolnye">Консольные подъёмники</a>
       <a href="/equipment/servisnye">Сервисные подъёмники</a>
@@ -116,6 +141,8 @@ function render_footer(): void
     <div>
       <h3>Компания</h3>
       <a href="/o-kompanii">О компании</a>
+      <a href="/montazh-gruzovogo-podemnika">Монтаж подъёмников</a>
+      <a href="/rostov-na-donu">Подъёмники в Ростове-на-Дону</a>
       <a href="/nashi-raboty">Наши работы</a>
       <a href="/voprosy">Вопросы и ответы</a>
       <a href="/blog">Блог</a>
@@ -125,19 +152,18 @@ function render_footer(): void
     </div>
     <div>
       <h3>Документы</h3>
-      <a href="/privacy">Политика конфиденциальности</a>
-      <a href="/terms">Пользовательское соглашение</a>
-      <a href="mailto:<?= e(CONTACT_EMAIL) ?>"><?= e(CONTACT_EMAIL) ?></a>
+      <?php foreach (legal_document_links() as $doc): ?>
+      <a href="<?= e($doc['href']) ?>"><?= e($doc['label']) ?></a>
+      <?php endforeach; ?>
     </div>
     <div>
       <h3>Производитель</h3>
       <p class="footer-nap">
-        <?= e(COMPANY_NAME) ?><br>
-        ИНН <?= e(COMPANY_INN) ?> · ОГРН <?= e(COMPANY_OGRN) ?><br>
-        <?= e(COMPANY_ADDRESS) ?>
+        <?= company_requisites_html(true) ?>
         <?php if (CONTACT_PHONE !== ''): ?><br><a href="<?= e(tel_href(CONTACT_PHONE)) ?>"><?= e(CONTACT_PHONE) ?></a><?php endif; ?>
-        <?php if (MAX_PROFILE_URL !== ''): ?><br><a href="<?= e(MAX_PROFILE_URL) ?>" rel="noopener">Мессенджер MAX</a><?php endif; ?>
+        <?php if (MAX_PROFILE_URL !== ''): ?><br><a href="<?= e(MAX_PROFILE_URL) ?>" rel="noopener noreferrer">Мессенджер MAX</a><?php endif; ?>
         <?php if (CONTACT_HOURS !== ''): ?><br><?= e(CONTACT_HOURS) ?><?php endif; ?>
+        <br><a href="<?= e('mailto:' . CONTACT_EMAIL) ?>"><?= e(CONTACT_EMAIL) ?></a>
       </p>
     </div>
   </div>
@@ -146,7 +172,8 @@ function render_footer(): void
     <div class="footer-links">
       <a href="/privacy">Политика конфиденциальности</a>
       <a href="/terms">Пользовательское соглашение</a>
-      <a href="<?= e('mailto:' . CONTACT_EMAIL) ?>"><?= e(CONTACT_EMAIL) ?></a>
+      <a href="/cookies">Cookie</a>
+      <button type="button" class="footer-cookie-settings" id="cookieSettingsOpen">Настройки cookie</button>
       <a href="/">НА ГЛАВНУЮ ↑</a>
     </div>
   </div>
@@ -154,45 +181,53 @@ function render_footer(): void
 <?php
 }
 
+/**
+ * Аналитика: только Яндекс.Метрика и только после согласия на аналитические cookie.
+ * GA4/Google Tag не используются — данные не передаются за пределы РФ.
+ */
 function render_analytics(): void
 {
-    // Аналитика загружается только после явного согласия пользователя на cookie
-    // (см. баннер и cookie vashpodemnik61_cookie_ok=1). Без согласия скрипты не выполняются.
-    if (($_COOKIE['vashpodemnik61_cookie_ok'] ?? '') !== '1') {
+    if (!consent_analytics_allowed()) {
         return;
     }
-    if (YANDEX_METRIKA_ID !== '') {
-        $id = (int) YANDEX_METRIKA_ID;
-        // anonymizeIP — IP-адреса обезличиваются; webvisor отключён, чтобы не записывать
-        // ввод пользователей в формы (персональные данные) без отдельного согласия.
-        echo '<script>(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,"script","https://mc.yandex.ru/metrika/tag.js","ym");ym(' . $id . ',"init",{clickmap:true,trackLinks:true,accurateTrackBounce:true,anonymizeIP:true});</script>' . "\n";
-        echo '<noscript><div><img src="https://mc.yandex.ru/watch/' . $id . '" style="position:absolute;left:-9999px" alt=""></div></noscript>' . "\n";
-    }
-    if (GA4_ID !== '') {
-        $g = preg_replace('/[^A-Za-z0-9-]/', '', GA4_ID);
-        echo '<script async src="https://www.googletagmanager.com/gtag/js?id=' . $g . '"></script>' . "\n";
-        echo '<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","' . $g . '",{"anonymize_ip":true});</script>' . "\n";
-    }
+    $id = (int) YANDEX_METRIKA_ID;
+    // webvisor отключён: запись ввода в формы — это персональные данные.
+    echo '<script>(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,"script","https://mc.yandex.ru/metrika/tag.js","ym");ym(' . $id . ',"init",{clickmap:true,trackLinks:true,accurateTrackBounce:true,anonymizeIP:true});</script>' . "\n";
+    echo '<noscript><div><img src="https://mc.yandex.ru/watch/' . $id . '" style="position:absolute;left:-9999px" alt=""></div></noscript>' . "\n";
 }
 
 /**
- * Уведомление о файлах cookie (см. assets/cookie-banner.js).
- * Баннер скрывается, если пользователь уже принял их (cookie vashpodemnik61_cookie_ok).
- * При нажатии на «Принять» записывается cookie на год — это согласие на использование
- * анонимизированной статистики (см. Политику обработки персональных данных, раздел 8.3).
+ * Баннер cookie с выбором категорий. Необязательные скрипты не загружаются
+ * до сохранения согласия; выбор можно изменить кнопкой в футере.
  */
 function render_cookie_banner(): void
 {
-    if (isset($_COOKIE['vashpodemnik61_cookie_ok'])) {
-        return;
-    }
+    $state = consent_state();
+    $hidden = $state['set'] ? ' hidden' : '';
     ?>
-    <div class="cookie-notice" id="cookieNotice" role="status" aria-live="polite">
-      <p>Этот сайт использует файлы cookie и подсчитывает статистику визитов (Яндекс.Метрика и Google Analytics с анонимизацией IP-адресов). Персональные данные не собираются и не передаются третьим лицам без необходимости исполнения договора.</p>
-      <div class="cookie-notice-actions">
-        <button type="button" class="cookie-notice-accept" id="cookieNoticeAccept">Принять</button>
-        <button type="button" class="cookie-notice-reject" id="cookieNoticeReject">Отклонить</button>
+    <div class="cookie-notice" id="cookieNotice" role="dialog" aria-modal="false" aria-labelledby="cookieNoticeTitle" aria-describedby="cookieNoticeText" data-analytics="<?= $state['analytics'] ? '1' : '0' ?>"<?= $hidden ?>>
+      <div class="cookie-notice-body">
+        <p class="cookie-notice-title" id="cookieNoticeTitle">Файлы cookie</p>
+        <p id="cookieNoticeText">Необходимые файлы cookie обеспечивают работу сайта. Аналитические cookie (Яндекс.Метрика) помогают понять, как используется сайт, и включаются только с вашего согласия. Подробнее — в <a href="/cookies">Политике использования cookie</a>.</p>
+        <div class="cookie-notice-settings" id="cookieNoticeSettings" hidden>
+          <label class="cookie-option">
+            <input type="checkbox" checked disabled>
+            <span><b>Необходимые</b> — всегда включены: сохранение выбора cookie, защита форм и админки.</span>
+          </label>
+          <label class="cookie-option">
+            <input type="checkbox" id="cookieOptAnalytics">
+            <span><b>Аналитические</b> — Яндекс.Метрика: обезличенная статистика посещений.</span>
+          </label>
+        </div>
       </div>
+      <div class="cookie-notice-actions">
+        <button type="button" class="cookie-notice-accept" id="cookieNoticeAcceptAll">Принять все</button>
+        <button type="button" class="cookie-notice-reject" id="cookieNoticeAcceptNecessary">Только необходимые</button>
+        <button type="button" class="cookie-notice-settings-btn" id="cookieNoticeSettingsToggle" aria-expanded="false">Настроить</button>
+        <button type="button" class="cookie-notice-accept" id="cookieNoticeSave" hidden>Сохранить выбор</button>
+        <a class="cookie-notice-more" href="/cookies">Что это значит</a>
+      </div>
+      <noscript><p class="cookie-notice-noscript">Без JavaScript аналитика не загружается. Настройки cookie можно изменить, включив JavaScript.</p></noscript>
     </div>
     <?php
 }
@@ -227,7 +262,7 @@ function page_start(string $title, string $description, string $canonicalPath, a
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="preload" href="/assets/fonts/pt-sans-narrow-700-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/pt-sans-400-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/site.css?v=5">
+<link rel="stylesheet" href="/assets/site.css?v=6">
 <link rel="stylesheet" href="/assets/responsive.css?v=3">
 <meta property="og:type" content="<?= e($ogType) ?>">
 <meta property="og:locale" content="ru_RU">
@@ -263,8 +298,7 @@ function page_end(): void
     render_footer();
     render_cookie_banner();
     echo '<script src="/assets/app.js" defer></script>' . "\n";
-    echo '<script src="/assets/cookie-banner.js" defer></script>' . "\n";
+    echo '<script src="/assets/cookie-consent.js" defer></script>' . "\n";
     render_analytics();
     echo "</body>\n</html>\n";
 }
-

@@ -15,14 +15,19 @@ if (admin_is_logged_in()) {
 $error = '';
 
 if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
-    if (!admin_csrf_check()) {
+    if (login_attempt_count() >= 10) {
+        $error = 'Слишком много попыток входа. Повторите через 15 минут.';
+    } elseif (!admin_csrf_check()) {
         $error = 'Сессия устарела, попробуйте ещё раз.';
     } else {
         $password = (string) ($_POST['password'] ?? '');
         if (admin_login($password)) {
+            login_attempt_clear();
             header('Location: /upravlenie', true, 303);
             exit;
         }
+        login_attempt_fail();
+        usleep(400000);
         $error = 'Неверный пароль.';
     }
 }

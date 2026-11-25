@@ -4158,3 +4158,311 @@ main, .section { overflow-x: hidden; }
     grid-template-columns: 1fr;
   }
 }
+
+/* ── Юридические документы и согласия (2026-11) ───────────────────────── */
+.legal-table {
+  border-collapse: collapse;
+  font-size: 13px;
+  margin: 0 0 20px;
+  width: 100%;
+}
+.legal-table th,
+.legal-table td {
+  border: 1px solid var(--line, #2a3836);
+  color: var(--soft, #b8bcb9);
+  padding: 9px 11px;
+  text-align: left;
+  vertical-align: top;
+}
+.legal-table th {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--white, #f4f4f2);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.legal-table code {
+  color: var(--white, #f4f4f2);
+  font-family: var(--mono, monospace);
+  font-size: 12px;
+}
+.legal-related {
+  border-top: 1px solid var(--line, #2a3836);
+  margin-top: 48px;
+  padding-top: 28px;
+}
+.legal-related h2 {
+  font-size: 18px;
+  margin-bottom: 14px;
+}
+.legal-related ul {
+  columns: 2;
+  column-gap: 32px;
+  list-style: none;
+  padding-left: 0;
+}
+.legal-related li {
+  break-inside: avoid;
+  margin-bottom: 8px;
+}
+.legal-related a,
+.legal-doc a {
+  color: var(--white, #f4f4f2);
+  text-decoration: underline;
+  text-decoration-color: rgba(244, 244, 242, 0.35);
+  text-underline-offset: 3px;
+}
+.legal-related a:hover,
+.legal-doc a:hover {
+  text-decoration-color: var(--red, #d3191d);
+}
+.legal-success,
+.legal-error {
+  border-left: 3px solid var(--green, #3fbf7f);
+  margin: 0 0 28px;
+  padding: 14px 18px;
+}
+.legal-error {
+  border-left-color: var(--red, #d3191d);
+}
+.legal-success p,
+.legal-error p {
+  margin: 0 0 6px;
+}
+.legal-form {
+  display: grid;
+  gap: 18px;
+  margin: 0 0 8px;
+  max-width: 640px;
+}
+.legal-form-field {
+  display: grid;
+  gap: 6px;
+}
+.legal-form-field > span {
+  color: var(--white, #f4f4f2);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.legal-form-field input,
+.legal-form-field select,
+.legal-form-field textarea {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--line, #2a3836);
+  color: var(--white, #f4f4f2);
+  font-family: inherit;
+  font-size: 14px;
+  padding: 11px 13px;
+  width: 100%;
+}
+.legal-form-field input:focus,
+.legal-form-field select:focus,
+.legal-form-field textarea:focus {
+  border-color: var(--red, #d3191d);
+  outline: none;
+}
+.legal-form-field small,
+.legal-form-note {
+  color: var(--muted, #8b9491);
+  font-size: 12px;
+  line-height: 1.55;
+}
+.legal-form-hp {
+  height: 1px;
+  left: -9999px;
+  overflow: hidden;
+  position: absolute;
+  width: 1px;
+}
+.form-hp {
+  height: 1px;
+  left: -9999px;
+  overflow: hidden;
+  position: absolute;
+  width: 1px;
+}
+.form-status {
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+  min-height: 0;
+}
+.form-status-error {
+  color: #ff9a9a;
+}
+.form-status-success {
+  color: #8fe3b7;
+}
+.privacy-link {
+  display: block;
+  font-size: 11px;
+  margin-top: 8px;
+}
+.privacy-link a {
+  color: var(--muted, #8b9491);
+  text-decoration: underline;
+}
+.consent-label-optional span {
+  opacity: 0.85;
+}
+
+/* Cookie: расширенный баннер с выбором категорий */
+.cookie-notice {
+  align-items: flex-start;
+  bottom: 16px;
+  flex-direction: column;
+  gap: 14px;
+  left: 16px;
+  max-width: 620px;
+  padding: 18px 20px;
+  width: calc(100% - 32px);
+}
+.cookie-notice-body {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+}
+.cookie-notice-title {
+  color: var(--white, #f4f4f2);
+  font-family: var(--display, sans-serif);
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+}
+.cookie-notice p {
+  font-size: 12.5px;
+}
+.cookie-notice-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+}
+.cookie-notice-settings {
+  border-top: 1px solid var(--line, #2a3836);
+  display: grid;
+  gap: 10px;
+  margin-top: 6px;
+  padding-top: 12px;
+}
+.cookie-option {
+  align-items: flex-start;
+  display: flex;
+  font-size: 12.5px;
+  gap: 8px;
+  line-height: 1.5;
+}
+.cookie-option input {
+  margin-top: 3px;
+}
+.cookie-option span {
+  color: var(--soft, #b8bcb9);
+}
+.cookie-notice-reject,
+.cookie-notice-settings-btn,
+.cookie-notice-more,
+.footer-cookie-settings {
+  appearance: none;
+  background: transparent;
+  border: 1px solid var(--line, #2a3836);
+  border-radius: 3px;
+  color: var(--soft, #b8bcb9);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 8px 12px;
+  text-decoration: none;
+}
+.cookie-notice-reject:hover,
+.cookie-notice-settings-btn:hover,
+.cookie-notice-more:hover,
+.footer-cookie-settings:hover {
+  border-color: var(--white, #f4f4f2);
+  color: var(--white, #f4f4f2);
+}
+.cookie-notice-more {
+  border-color: transparent;
+  margin-left: auto;
+  text-decoration: underline;
+}
+.footer-cookie-settings {
+  background: none;
+  border: 0;
+  padding: 0;
+  text-transform: none;
+  font-weight: 400;
+  font-size: inherit;
+}
+.cookie-notice-noscript {
+  color: var(--muted, #8b9491);
+}
+
+@media (max-width: 640px) {
+  .cookie-notice {
+    bottom: 12px;
+    left: 12px;
+    max-height: 70vh;
+    overflow-y: auto;
+    width: calc(100% - 24px);
+  }
+  .legal-related ul {
+    columns: 1;
+  }
+  .legal-table {
+    display: block;
+    overflow-x: auto;
+  }
+  .cookie-notice-actions > * {
+    flex: 1 1 auto;
+  }
+  .cookie-notice-more {
+    margin-left: 0;
+    text-align: center;
+  }
+}
+
+/* Видео: превью до явного согласия на загрузку внешнего плеера */
+.eq-video-facade {
+  align-items: center;
+  aspect-ratio: 16 / 9;
+  background: #0b0f0e;
+  border: 1px solid var(--line, #2a3836);
+  color: var(--white, #f4f4f2);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  font-family: inherit;
+  font-size: 13px;
+  gap: 12px;
+  justify-content: center;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  width: 100%;
+}
+.eq-video-facade:hover {
+  border-color: var(--red, #d3191d);
+}
+.eq-video-play {
+  align-items: center;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  display: flex;
+  font-size: 18px;
+  height: 58px;
+  justify-content: center;
+  width: 58px;
+}
+.eq-video-note {
+  color: var(--muted, #8b9491);
+  font-size: 12px;
+  line-height: 1.55;
+  margin: 12px 0 0;
+}
+.eq-video-wrap iframe {
+  aspect-ratio: 16 / 9;
+  border: 0;
+  width: 100%;
+}

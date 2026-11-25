@@ -13,8 +13,20 @@
   var preview = document.getElementById('requestPreview');
   var button = form.querySelector('[data-button-text]');
   var buttonArrow = form.querySelector('[data-button-arrow]');
+  var submitButton = form.querySelector('button[type="submit"]');
   var defaultButtonHTML = button ? button.innerHTML : '';
-  var copiedText = 'Заявка скопирована';
+  var successText = 'Заявка отправлена';
+
+  var status = document.createElement('p');
+  status.className = 'form-status';
+  status.setAttribute('role', 'status');
+  status.setAttribute('aria-live', 'polite');
+  form.appendChild(status);
+
+  function setStatus(message, kind) {
+    status.textContent = message || '';
+    status.className = 'form-status' + (kind ? ' form-status-' + kind : '');
+  }
 
   function val(name) {
     var field = form.elements[name];
@@ -54,10 +66,31 @@
   form.addEventListener('change', refreshPreview);
   refreshPreview();
 
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text).catch(function () {});
+    }
+    var helper = document.createElement('textarea');
+    helper.value = text;
+    helper.setAttribute('readonly', '');
+    helper.style.position = 'absolute';
+    helper.style.left = '-9999px';
+    document.body.appendChild(helper);
+    helper.select();
+    try { document.execCommand('copy'); } catch (e) { /* noop */ }
+    document.body.removeChild(helper);
+    return Promise.resolve();
+  }
+
   form.addEventListener('submit', function (event) {
     event.preventDefault();
-    if (!form.reportValidity()) return;
+    if (!form.reportValidity()) {
+      setStatus('Проверьте обязательные поля и отметьте согласие на обработку персональных данных.', 'error');
+      return;
+    }
 
+    var consentField = form.elements['consentData'];
+    var newsField = form.elements['consentNews'];
     var text = buildRequestText();
 
     var payload = {
@@ -70,36 +103,42 @@
       platformSize: platformSize(),
       city: val('city'),
       stops: val('stops'),
-      consentData: val('consentData'),   // отметка согласия (обязательна — см. submit.php)
-      consentNews: val('consentNews')
+      form: 'calculator',
+      page: window.location.pathname,
+      consentData: !!(consentField && consentField.checked),
+      consentNews: !!(newsField && newsField.checked)
     };
+
+    if (submitButton) submitButton.disabled = true;
+    setStatus('Отправляем заявку…', '');
 
     fetch('/submit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify(payload)
-    }).catch(function () { /* сеть недоступна — текст заявки всё равно копируем */ });
-
-    var done = function () {
-      if (!button) return;
-      button.innerHTML = copiedText + '<span aria-hidden="true">✓</span>';
-      window.setTimeout(function () { button.innerHTML = defaultButtonHTML; }, 3500);
-    };
-
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(done, done);
-    } else {
-      var helper = document.createElement('textarea');
-      helper.value = text;
-      helper.setAttribute('readonly', '');
-      helper.style.position = 'absolute';
-      helper.style.left = '-9999px';
-      document.body.appendChild(helper);
-      helper.select();
-      try { document.execCommand('copy'); } catch (e) { /* noop */ }
-      document.body.removeChild(helper);
-      done();
-    }
+    }).then(function (response) {
+      var mail = form.getAttribute('data-contact-email') || 'info@vashpodemnik61.ru';
+      return response.json().catch(function () { return { ok: false, error: 'Сервер вернул непонятный ответ. Напишите на ' + mail + '.' }; });
+    }).then(function (data) {
+      if (!data || !data.ok) {
+        throw new Error((data && data.error) || 'Не удалось отправить заявку.');
+      }
+      setStatus(data.message || 'Заявка отправлена. Инженер свяжется с вами.', 'success');
+      if (button) {
+        button.innerHTML = successText + '<span aria-hidden="true"> ✓</span>';
+      }
+      copyText(text);
+      form.reset();
+      refreshPreview();
+      window.setTimeout(function () {
+        if (button) button.innerHTML = defaultButtonHTML;
+        if (submitButton) submitButton.disabled = false;
+      }, 6000);
+    }).catch(function (error) {
+      setStatus(error && error.message ? error.message : 'Не удалось отправить заявку. Проверьте связь и попробуйте ещё раз.', 'error');
+      if (submitButton) submitButton.disabled = false;
+      if (button) button.innerHTML = defaultButtonHTML;
+    });
   });
 })();
 
@@ -270,6 +309,22 @@
       button.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
       var icon = button.querySelector('i');
       if (icon) icon.textContent = isOpen ? '−' : '+';
+    });
+  });
+})();
+/* ───────────────────────── Видео: загрузка по клику ───────────────────────── */
+(function () {
+  document.querySelectorAll('[data-video-load]').forEach(function (button) {
+    button.addEventListener('click', function () {
+      var src = button.getAttribute('data-video-src');
+      if (!src) return;
+      var iframe = document.createElement('iframe');
+      iframe.src = src;
+      iframe.title = button.getAttribute('data-video-title') || 'Видео';
+      iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+      iframe.setAttribute('allowfullscreen', '');
+      iframe.setAttribute('loading', 'lazy');
+      button.replaceWith(iframe);
     });
   });
 })();

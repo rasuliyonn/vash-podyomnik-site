@@ -59,7 +59,7 @@ page_start(
       <?php endif; ?>
       <div class="contact-row">
         <small>Реквизиты</small>
-        <span><?= e(COMPANY_NAME) ?><br>ИНН <?= e(COMPANY_INN) ?> · ОГРН <?= e(COMPANY_OGRN) ?></span>
+        <span><?= company_requisites_html(false) ?><br><a href="/requisites">Подробнее о продавце</a></span>
       </div>
     </div>
 

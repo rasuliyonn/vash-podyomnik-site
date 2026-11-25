@@ -22,7 +22,9 @@ $cc = site_content()['calculator'];
     </div>
   </div>
 
-  <form class="calculator-form" id="calcForm" action="/submit" method="post" novalidate>
+  <form class="calculator-form" id="calcForm" action="/submit" method="post" novalidate data-contact-email="<?= e(CONTACT_EMAIL) ?>">
+    <input type="hidden" name="form" value="calculator">
+    <input type="hidden" name="page" value="<?= e(current_path()) ?>">
     <label>
       <span>01 · ТИП ОБОРУДОВАНИЯ</span>
       <select name="liftType">
@@ -86,18 +88,23 @@ $cc = site_content()['calculator'];
 
     <div class="form-consents">
       <label class="consent-label">
-        <input type="checkbox" name="consentData" required>
-        <span>Я согласен(-на) на обработку моих персональных данных в соответствии с <a href="/privacy" target="_blank" rel="noopener">Политикой по обработке и защиты персональных данных</a></span>
+        <input type="checkbox" name="consentData" value="1" required>
+        <span>Я даю согласие на обработку моих персональных данных (имя, телефон, email, сведения об объекте) для рассмотрения заявки и подготовки расчёта на условиях <a href="/consent" target="_blank" rel="noopener">Согласия на обработку персональных данных</a> и <a href="/privacy" target="_blank" rel="noopener">Политики обработки персональных данных</a>. Согласие можно отозвать в любое время.</span>
       </label>
-      <label class="consent-label">
-        <input type="checkbox" name="consentNews">
-        <span>Я согласен(-на) на получение новостных рассылок, рассылок рекламного, информационного характера</span>
+      <label class="consent-label consent-label-optional">
+        <input type="checkbox" name="consentNews" value="1">
+        <span>Отдельно согласен(-на) получать рекламные и информационные сообщения на условиях <a href="/marketing" target="_blank" rel="noopener">Согласия на получение рекламных сообщений</a>. Необязательно.</span>
       </label>
+    </div>
+
+    <div class="form-hp" aria-hidden="true">
+      <label>Не заполняйте это поле <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
     </div>
 
     <button class="primary-button form-button" type="submit" data-button-text>
       <?= e($cc['buttonText']) ?><span aria-hidden="true" data-button-arrow>→</span>
     </button>
     <small class="privacy"><?= e($cc['privacyText']) ?></small>
+    <small class="privacy-link"><a href="/otzyv-soglasiya">Отозвать согласие или обратиться по персональным данным</a></small>
   </form>
 </section>

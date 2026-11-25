@@ -15,8 +15,11 @@ function admin_session(): void
 {
     if (session_status() !== PHP_SESSION_ACTIVE) {
         $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
-            || (($_SERVER['SERVER_PORT'] ?? '') === '443');
-session_set_cookie_params([
+            || (($_SERVER['SERVER_PORT'] ?? '') === '443')
+            || (strtolower((string) ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')) === 'https');
+        ini_set('session.use_strict_mode', '1');
+        ini_set('session.use_only_cookies', '1');
+        session_set_cookie_params([
             'lifetime' => 7 * 24 * 3600,
             'path' => '/upravlenie',
             'secure' => $isHttps,
@@ -74,11 +77,36 @@ function admin_is_logged_in(): bool
     return !empty($_SESSION['admin']) && $_SESSION['admin'] === true;
 }
 
+/**
+ * Действует ли пароль по умолчанию («admin» или незаданный ADMIN_PASSWORD).
+ * Пока пароль не сменён, админка требует его смены: иначе доступ к заявкам
+ * (персональным данным) получает любой, кто угадает стандартный пароль.
+ */
+function admin_password_is_default(): bool
+{
+    if (admin_password_hash() !== null) {
+        return false;
+    }
+    $env = getenv('ADMIN_PASSWORD');
+    return $env === false || $env === '' || $env === 'admin';
+}
+
+function admin_current_path(): string
+{
+    $path = parse_url((string) ($_SERVER['REQUEST_URI'] ?? '/'), PHP_URL_PATH);
+    return is_string($path) ? $path : '/upravlenie';
+}
+
 function require_admin(): void
 {
     if (!admin_is_logged_in()) {
         http_response_code(303);
         header('Location: /upravlenie/login');
+        exit;
+    }
+    if (admin_password_is_default() && !in_array(admin_current_path(), ['/upravlenie/settings', '/upravlenie/logout'], true)) {
+        http_response_code(303);
+        header('Location: /upravlenie/settings?force=1');
         exit;
     }
 }
@@ -149,6 +177,7 @@ function admin_page_start(string $title): void
   <a href="/upravlenie" class="admin-logout-btn" style="background: var(--red); color: #fff">Админка</a>
   <nav class="admin-nav" aria-label="Разделы админки">
     <a href="/upravlenie/submissions">Заявки</a>
+    <a href="/upravlenie/consent-requests">Обращения по ПД</a>
     <a href="/upravlenie/equipment">Оборудование</a>
     <a href="/upravlenie/works">Работы</a>
     <a href="/upravlenie/settings">Настройки</a>
@@ -156,6 +185,9 @@ function admin_page_start(string $title): void
   <a class="admin-logout-btn" href="/upravlenie/logout">Выйти</a>
 </header>
 <main class="admin-main">
+<?php if (admin_password_is_default()): ?>
+<div class="admin-warn" role="alert">Действует пароль по умолчанию. Смените его в <a href="/upravlenie/settings?force=1">настройках</a> — до этого доступ к заявкам (персональным данным) не защищён.</div>
+<?php endif; ?>
 <?php
 }
 

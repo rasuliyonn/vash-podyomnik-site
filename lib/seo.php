@@ -7,6 +7,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../config.php';
+require_once __DIR__ . '/company.php';
 
 function e(string $s): string
 {
@@ -43,7 +44,7 @@ function organization_jsonld(): array
         '@type' => ['Organization', 'LocalBusiness'],
         '@id' => SITE_URL . '/#organization',
         'name' => SITE_NAME,
-        'legalName' => COMPANY_NAME,
+        'legalName' => COMPANY_LEGAL_NAME !== '' ? COMPANY_LEGAL_NAME : SITE_NAME,
         'url' => SITE_URL . '/',
         'logo' => [
             '@type' => 'ImageObject',
@@ -55,13 +56,10 @@ function organization_jsonld(): array
         'email' => CONTACT_EMAIL,
         'address' => [
             '@type' => 'PostalAddress',
-            'streetAddress' => COMPANY_ADDRESS,
             'addressLocality' => COMPANY_CITY,
-            'addressRegion' => 'Ростовская область',
+            'addressRegion' => COMPANY_REGION,
             'addressCountry' => 'RU',
         ],
-        'taxID' => 'RU' . COMPANY_INN,
-        'vatID' => COMPANY_INN,
         'contactPoint' => [
             '@type' => 'ContactPoint',
             'contactType' => 'sales',
@@ -83,6 +81,16 @@ function organization_jsonld(): array
             'ТР ТС 011/2011',
         ],
     ];
+    // Улица добавляется только если в адресе указано что-то кроме города:
+    // дублировать «г. Ростов-на-Дону» в streetAddress и addressLocality нельзя.
+    $address = trim((string) COMPANY_ADDRESS);
+    if ($address !== '' && mb_stripos($address, COMPANY_CITY) === false) {
+        $org['address']['streetAddress'] = $address;
+    }
+    // ИНН публикуется только после проверки формата и контрольной суммы.
+    if (company_inn_value() !== '') {
+        $org['taxID'] = company_inn_value();
+    }
     if (CONTACT_PHONE !== '') {
         $org['telephone'] = CONTACT_PHONE;
     }
@@ -144,7 +152,7 @@ function itemlist_jsonld(string $name, array $urls): array
     ];
 }
 
-function service_jsonld(string $name, string $description, string $path): array
+function service_jsonld(string $name, string $description, string $path, ?array $areaServed = null): array
 {
     return [
         '@context' => 'https://schema.org',
@@ -154,7 +162,7 @@ function service_jsonld(string $name, string $description, string $path): array
         'description' => $description,
         'url' => abs_url($path),
         'provider' => ['@id' => SITE_URL . '/#organization'],
-        'areaServed' => ['@type' => 'Country', 'name' => 'Россия'],
+        'areaServed' => $areaServed ?? ['@type' => 'Country', 'name' => 'Россия'],
     ];
 }
 

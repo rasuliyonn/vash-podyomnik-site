@@ -113,7 +113,7 @@ page_start(
   </div>
 
   <h2 class="page-title" style="font-size: 30px; margin-top: 64px">Не уверены, что выбрать?</h2>
-  <p class="blog-lead" style="font-size: 16px">Инженер сравнит решения на вашем объекте — по планировке, грузу, потокам и бюджету. Полезные статьи: <a href="/blog/shaftnyj-vs-konsolnyj">«Шахтный или консольный»</a>, <a href="/blog/kak-vybrat-gruzovoj-podemnik">«Как выбрать грузовой подъёмник»</a>, <a href="/blog/podemnik-ili-gruzovoj-lift">«Подъёмник или грузовой лифт»</a>. Ответы на типовые вопросы — на странице <a href="/voprosy">«Вопросы и ответы»</a>.</p>
+  <p class="blog-lead" style="font-size: 16px">Инженер сравнит решения на вашем объекте — по планировке, грузу, потокам и бюджету. Полезные статьи: <a href="/blog/shaftnyj-vs-konsolnyj">«Шахтный или консольный»</a>, <a href="/blog/kak-vybrat-gruzovoj-podemnik">«Как выбрать грузовой подъёмник»</a>, <a href="/blog/podemnik-ili-gruzovoj-lift">«Подъёмник или грузовой лифт»</a>. Ответы на типовые вопросы — на странице <a href="/voprosy">«Вопросы и ответы»</a>. Нужен подъёмник под нестандартные параметры — <a href="/gruzovye-podemniki-po-proektu">изготовление по индивидуальному проекту</a>; монтаж на объекте — <a href="/montazh-gruzovogo-podemnika">монтаж под ключ</a>.</p>
 
   <div class="section-more" style="margin-top: 30px">
     <a class="primary-button" href="/raschet">Получить расчёт<span aria-hidden="true"> →</span></a>

@@ -2,11 +2,13 @@
 
 # ── Прячем служебные каталоги и файлы ─────────────────────────────────────
 RewriteEngine On
+Options -Indexes
 
-RewriteRule ^(data|lib|pages)(/|$) - [F,L]
-RewriteRule ^(config\.php|composer\.(json|lock)|package\.json)$ - [F,L]
+RewriteRule ^(data|lib|pages|docs|scripts|seo-content|LEGAL_COMPLIANCE)(/|$) - [F,L]
+RewriteRule ^\.git(/|$) - [F,L]
+RewriteRule ^(config\.php|composer\.(json|lock)|package\.json|start-php\.bat|router\.dev\.php)$ - [F,L]
 
-<FilesMatch "\.(sqlite|sqlite-journal|db|log|md)$">
+<FilesMatch "\.(sqlite|sqlite-journal|db|log|md|py|bat|ini|sh)$">
   <IfModule mod_authz_core.c>
     Require all denied
   </IfModule>
@@ -39,10 +41,12 @@ RewriteRule ^ https://vashpodemnik61.ru%{REQUEST_URI} [R=301,L]
   # 'unsafe-inline' для script/style нужен инлайн-скриптам (speculationrules, инициализация счётчиков)
   # и inline style=""; внешние чужие origins не разрешены. upgrade-insecure-requests НЕ ставим,
   # иначе ломается http:// локальное превью.
-  Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://mc.yandex.ru https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://mc.yandex.ru https://www.google-analytics.com https://region1.google-analytics.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'"
+  Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://mc.yandex.ru; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://mc.yandex.ru; font-src 'self'; connect-src 'self' https://mc.yandex.ru; frame-src https://www.youtube.com https://player.vimeo.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'"
+  Header set X-Permitted-Cross-Domain-Policies "none"
   # Админка не индексируется
   <If "%{REQUEST_URI} =~ m#^/upravlenie#">
     Header set X-Robots-Tag "noindex, nofollow"
+    Header set Cache-Control "no-store, max-age=0"
   </If>
 </IfModule>
 
@@ -70,7 +74,14 @@ RewriteRule ^ https://vashpodemnik61.ru%{REQUEST_URI} [R=301,L]
 # SetEnv MAX_PROFILE_URL "https://max.ru/u/код-профиля"
 # SetEnv CONTACT_HOURS "Пн–Пт 08:00–18:00, Сб 09:00–15:00"
 # SetEnv YANDEX_METRIKA_ID "12345678"
-# SetEnv GA4_ID "G-XXXXXXXXXX"
+# SetEnv COMPANY_LEGAL_NAME "Индивидуальный предприниматель Фамилия Имя Отчество"
+# SetEnv COMPANY_INN "12 цифр из ЕГРИП"
+# SetEnv COMPANY_OGRNIP "15 цифр из ЕГРИП"
+# SetEnv COMPANY_ADDRESS "полный адрес из ЕГРИП"
+# SetEnv PRIVACY_EMAIL "privacy@ваш-домен.ru"
+# SetEnv PRIVACY_OFFICER "Фамилия И.О. ответственного"
+# SetEnv RKN_REGISTRY_NUMBER "номер записи в реестре операторов ПД"
+# SetEnv HOSTING_PROVIDER "наименование хостинг-провайдера"
 # SetEnv YANDEX_VERIFICATION "код-из-яндекс-вебмастера"
 # SetEnv GOOGLE_VERIFICATION "код-из-search-console"
 # SetEnv SITE_URL "https://vashpodemnik61.ru"

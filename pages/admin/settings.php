@@ -38,7 +38,10 @@ $defaultPassword = admin_password_hash() === null;
 admin_page_start('Настройки');
 ?>
 <?php if ($defaultPassword): ?>
-<p class="admin-warn">Сейчас действует пароль из переменной <code>ADMIN_PASSWORD</code> (или «admin» по умолчанию). После смены здесь пароль хранится в базе только в виде bcrypt-хэша.</p>
+<p class="admin-warn" role="alert">Сейчас действует пароль по умолчанию. Смените его прямо сейчас: до смены доступ к заявкам (персональным данным) не защищён. После смены здесь пароль хранится в базе только в виде bcrypt-хэша.</p>
+<?php endif; ?>
+<?php if (isset($_GET['force'])): ?>
+<p class="admin-hint">Смена пароля обязательна до начала работы с заявками — этого требует ст. 19 Федерального закона № 152-ФЗ (меры защиты персональных данных).</p>
 <?php endif; ?>
 <?php if ($notice !== ''): ?><p class="admin-ok"><?= e($notice) ?></p><?php endif; ?>
 <?php if ($error !== ''): ?><p class="admin-error-box"><?= e($error) ?></p><?php endif; ?>
@@ -67,11 +70,15 @@ admin_page_start('Настройки');
     <li><code>CONTACT_PHONE</code> — телефон на сайте и в schema.org (по умолчанию +7 (952) 603-57-85; пусто = не показываем)</li>
     <li><code>MAX_PROFILE_URL</code> — ссылка на профиль в мессенджере MAX (<code>https://max.ru/u/…</code>)</li>
     <li><code>CONTACT_HOURS</code> — часы работы</li>
-    <li><code>YANDEX_METRIKA_ID</code> — счётчик Яндекс.Метрики</li>
-    <li><code>GA4_ID</code> — Google Analytics 4</li>
+    <li><code>YANDEX_METRIKA_ID</code> — счётчик Яндекс.Метрики (грузится только после согласия на аналитические cookie)</li>
     <li><code>YANDEX_VERIFICATION</code>, <code>GOOGLE_VERIFICATION</code> — коды верификации вебмастеров</li>
     <li><code>ADMIN_PASSWORD</code> — пароль админки до первой смены здесь</li>
+    <li><code>COMPANY_LEGAL_NAME</code> — юридическое наименование из ЕГРИП (например, «Индивидуальный предприниматель Иванов Иван Иванович»)</li>
+    <li><code>COMPANY_INN</code> — ИНН из ЕГРИП (12 цифр), <code>COMPANY_OGRNIP</code> — ОГРНИП (15 цифр)</li>
+    <li><code>COMPANY_ADDRESS</code> — адрес из ЕГРИП, <code>PRIVACY_EMAIL</code> — адрес для обращений по ПД</li>
+    <li><code>PRIVACY_OFFICER</code> — ФИО ответственного за обработку ПД, <code>RKN_REGISTRY_NUMBER</code> — номер в реестре операторов</li>
     <li><code>SITE_URL</code> — канонический адрес (по умолчанию https://vashpodemnik61.ru)</li>
+    <li><code>HOSTING_PROVIDER</code> — наименование хостинг-провайдера (указывается в Политике)</li>
   </ul>
 </section>
 <?php

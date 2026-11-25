@@ -108,7 +108,12 @@ page_start(
   <section class="eq-section">
     <div class="eq-section-label"><span>/ ВИДЕО</span></div>
     <div class="eq-video-wrap">
-      <iframe src="<?= e($data['videoUrl']) ?>" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="Видео: <?= e($title) ?>"></iframe>
+      <button type="button" class="eq-video-facade" data-video-load data-video-src="<?= e($data['videoUrl']) ?>" data-video-title="Видео: <?= e($title) ?>">
+        <span class="eq-video-play" aria-hidden="true">▶</span>
+        <span>Смотреть видео</span>
+      </button>
+      <p class="eq-video-note">Видео размещено на внешнем сервисе (YouTube или Vimeo) и загружается только после нажатия. При просмотре внешний сервис может получать данные о вашем устройстве и устанавливать свои cookie — <a href="/cookies">подробнее</a>.</p>
+      <noscript><p><a href="<?= e($data['videoUrl']) ?>" target="_blank" rel="noopener noreferrer">Открыть видео в новой вкладке</a></p></noscript>
     </div>
   </section>
   <?php endif; ?>
@@ -151,6 +156,8 @@ page_start(
       <a href="/blog/kak-vybrat-gruzovoj-podemnik">Как выбрать грузовой подъёмник</a> ·
       <a href="/blog/tr-ts-011-2011">ТР ТС 011/2011 простыми словами</a> ·
       <a href="/blog/stoimost-gruzovogo-podemnika">Из чего складывается цена</a> ·
+      <a href="/gruzovye-podemniki-po-proektu">Изготовление по индивидуальному проекту</a> ·
+      <a href="/montazh-gruzovogo-podemnika">Монтаж под ключ</a> ·
       <a href="/voprosy">Все вопросы и ответы</a>
     </p>
   </section>

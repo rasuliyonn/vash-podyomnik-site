@@ -93,8 +93,9 @@ page_start(
       </a>
       <?php endforeach; ?>
     </div>
-    <div class="section-more">
+    <div class="section-more-links">
       <a class="text-link" href="/oborudovanie">Каталог оборудования и сравнение типов<span aria-hidden="true"> →</span></a>
+      <a class="text-link" href="/gruzovye-podemniki-po-proektu">Подъёмник по индивидуальному проекту<span aria-hidden="true"> →</span></a>
     </div>
   </section>
 

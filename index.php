@@ -9,6 +9,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/lib/seo.php';
 require_once __DIR__ . '/lib/blog.php';
+require_once __DIR__ . '/lib/landings.php';
 
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 $rawPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
@@ -32,12 +33,14 @@ function send_security_headers(): void
     header('Referrer-Policy: strict-origin-when-cross-origin');
     header('Permissions-Policy: camera=(), microphone=(), geolocation=()');
     header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
-    header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://mc.yandex.ru https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://mc.yandex.ru https://www.google-analytics.com https://region1.google-analytics.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'");
+    header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://mc.yandex.ru; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://mc.yandex.ru; font-src 'self'; connect-src 'self' https://mc.yandex.ru; frame-src https://www.youtube.com https://player.vimeo.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'");
+    header('X-Permitted-Cross-Domain-Policies: none');
 }
 send_security_headers();
 
 if (str_starts_with($_SERVER['REQUEST_URI'] ?? '/', '/upravlenie')) {
     header('X-Robots-Tag: noindex, nofollow');
+    header('Cache-Control: no-store, max-age=0');
 }
 
 $path = '/' . trim($rawPath, '/');
@@ -68,8 +71,20 @@ $simpleRoutes = [
     '/kontakty' => 'contacts.php',
     '/raschet' => 'raschet.php',
     '/privacy' => 'privacy.php',
+    '/consent' => 'consent.php',
+    '/cookies' => 'cookies.php',
     '/terms' => 'terms.php',
+    '/offer' => 'offer.php',
+    '/marketing' => 'marketing.php',
+    '/requisites' => 'requisites.php',
+    '/otzyv-soglasiya' => 'consent-withdraw.php',
     '/submit' => 'submit.php',
+];
+
+$landingRoutes = [
+    '/gruzovye-podemniki-po-proektu' => 'gruzovye-podemniki-po-proektu',
+    '/montazh-gruzovogo-podemnika' => 'montazh-gruzovogo-podemnika',
+    '/rostov-na-donu' => 'rostov-na-donu',
 ];
 
 $adminRoutes = [
@@ -77,6 +92,7 @@ $adminRoutes = [
     '/upravlenie/login' => 'admin/login.php',
     '/upravlenie/logout' => 'admin/logout.php',
     '/upravlenie/submissions' => 'admin/submissions.php',
+    '/upravlenie/consent-requests' => 'admin/consent-requests.php',
     '/upravlenie/equipment' => 'admin/equipment.php',
     '/upravlenie/equipment/edit' => 'admin/equipment-edit.php',
     '/upravlenie/works' => 'admin/works.php',
@@ -99,11 +115,23 @@ if ($path === '/sitemap.xml') {
         ['loc' => '/top-articles', 'priority' => '0.7', 'freq' => 'weekly'],
         ['loc' => '/o-kompanii', 'priority' => '0.6', 'freq' => 'yearly'],
         ['loc' => '/kontakty', 'priority' => '0.6', 'freq' => 'yearly'],
-        ['loc' => '/privacy', 'priority' => '0.2', 'freq' => 'yearly'],
+        ['loc' => '/privacy', 'priority' => '0.3', 'freq' => 'yearly'],
+        ['loc' => '/consent', 'priority' => '0.2', 'freq' => 'yearly'],
+        ['loc' => '/cookies', 'priority' => '0.2', 'freq' => 'yearly'],
         ['loc' => '/terms', 'priority' => '0.2', 'freq' => 'yearly'],
+        ['loc' => '/offer', 'priority' => '0.3', 'freq' => 'yearly'],
+        ['loc' => '/marketing', 'priority' => '0.1', 'freq' => 'yearly'],
+        ['loc' => '/requisites', 'priority' => '0.3', 'freq' => 'yearly'],
+        ['loc' => '/otzyv-soglasiya', 'priority' => '0.1', 'freq' => 'yearly'],
     ];
     foreach (equipment_order_for_sitemap() as $slug) {
         $urls[] = ['loc' => '/equipment/' . $slug, 'priority' => '0.8', 'freq' => 'monthly'];
+    }
+    foreach (landings_slugs() as $landingSlug) {
+        $landing = landing_get($landingSlug);
+        if ($landing !== null) {
+            $urls[] = ['loc' => $landing['path'], 'priority' => '0.8', 'freq' => 'monthly'];
+        }
     }
     foreach (blog_articles() as $article) {
         $urls[] = [
@@ -146,6 +174,11 @@ if ($path === '/sitemap.xml') {
 function equipment_order_for_sitemap(): array
 {
     return ['shaftnye', 'konsolnye', 'servisnye', 'kottedzhnye', 'platformy'];
+}
+
+if (isset($landingRoutes[$path])) {
+    send_page('landing.php', ['landing' => $landingRoutes[$path]]);
+    exit;
 }
 
 if (isset($simpleRoutes[$path])) {
