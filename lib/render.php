@@ -228,7 +228,7 @@ function page_start(string $title, string $description, string $canonicalPath, a
 <link rel="preload" href="/assets/fonts/pt-sans-narrow-700-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/pt-sans-400-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/site.css?v=5">
-<link rel="stylesheet" href="/assets/responsive.css?v=2">
+<link rel="stylesheet" href="/assets/responsive.css?v=3">
 <meta property="og:type" content="<?= e($ogType) ?>">
 <meta property="og:locale" content="ru_RU">
 <meta property="og:site_name" content="<?= e(SITE_NAME) ?>">

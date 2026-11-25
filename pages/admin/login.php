@@ -38,7 +38,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
 <link rel="stylesheet" href="/assets/fonts.css">
 <link rel="stylesheet" href="/assets/style.css">
 <link rel="stylesheet" href="/assets/site-ext.css">
-<link rel="stylesheet" href="/assets/responsive.css?v=2">
+<link rel="stylesheet" href="/assets/responsive.css?v=3">
 </head>
 <body class="admin-body">
 <div class="admin-login-page">
