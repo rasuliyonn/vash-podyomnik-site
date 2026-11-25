@@ -3330,7 +3330,7 @@ a.equipment-card:hover .card-top span:last-child {
   }
 }
 
-/* Уведомление о файлах cookie (assets/cookie-banner.js) */
+/* Уведомление о файлах cookie (assets/cookie-consent.js) */
 .cookie-notice {
   align-items: center;
   background: var(--black-2, #0e1413);

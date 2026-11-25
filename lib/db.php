@@ -312,10 +312,22 @@ function submissions_purge_expired(): int
 
         $attempts = db()->prepare("DELETE FROM login_attempts WHERE created_at < datetime('now', '-1 day')");
         $attempts->execute();
+
+        // Обращения, доведённые до статуса «обработано», хранятся 3 года как
+        // подтверждение рассмотрения. Необработанные не удаляются автоматически.
+        $requests = db()->prepare("DELETE FROM consent_requests WHERE status = 'done' AND processed_at <> '' AND processed_at < datetime('now', '-36 months')");
+        $requests->execute();
     } catch (Throwable $e) {
         error_log('[retention] ' . $e->getMessage());
     }
     return $deleted;
+}
+
+function consent_requests_recent_count(): int
+{
+    $stmt = db()->prepare("SELECT COUNT(*) FROM consent_requests WHERE ip_truncated = ? AND created_at > datetime('now', '-10 minutes')");
+    $stmt->execute([ip_truncated()]);
+    return (int) $stmt->fetchColumn();
 }
 
 function consent_request_add(string $contact, string $kind, string $message): int

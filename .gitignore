@@ -6,7 +6,9 @@
 /data/*.db*
 /uploads/*
 !/uploads/.gitkeep
+!/uploads/.htaccess
 !/data/.gitkeep
+!/data/.htaccess
 
 # Локальные инструменты и кэши
 /.claude

@@ -46,6 +46,16 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
 
         if ($errors === []) {
             try {
+                if (consent_requests_recent_count() >= 5) {
+                    $errors[] = 'Слишком много обращений с вашего адреса. Попробуйте через 10 минут или напишите на ' . PRIVACY_EMAIL . '.';
+                }
+            } catch (Throwable $e) {
+                error_log('[consent-rate] ' . $e->getMessage());
+            }
+        }
+
+        if ($errors === []) {
+            try {
                 $sentId = consent_request_add($contact, $kind, $message);
                 // Уведомление оператору — необязательное: обращение уже сохранено в панели.
                 $subject = 'Обращение по персональным данным #' . $sentId;

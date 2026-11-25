@@ -7,7 +7,8 @@
 
 - Публичные страницы: главная, каталог оборудования, 5 карточек оборудования,
   «Наши работы» (71 фото), «Вопросы и ответы» (28 вопросов), блог (16 статей),
-  «О компании», «Контакты», «Расчёт стоимости», privacy, terms, 404.
+  «О компании», «Контакты», «Расчёт стоимости», юридические документы (/privacy, /consent,
+  /cookies, /terms, /offer, /marketing, /requisites, /otzyv-soglasiya), 404.
 - SEO/GEO: мета-теги и canonical на каждую страницу, JSON-LD (Organization + LocalBusiness,
   WebSite, BreadcrumbList, FAQPage, Article, Service, ItemList, ImageGallery),
   `sitemap.xml` (генерируется), `robots.txt` с правилами для ответных ИИ-краулеров,
@@ -33,7 +34,8 @@
 3. Выставьте права (если нужно): `data` и `uploads` — `755` (или `775`).
 4. Откройте `https://ваш-домен/` — главная должна загрузиться.
    База `data/site.sqlite` и таблицы создадутся автоматически при первом запросе.
-5. Зайдите в `/upravlenie`, пароль по умолчанию — **admin**. **Сразу** смените в «Настройки».
+5. Зайдите в `/upravlenie`, пароль по умолчанию — **admin**. Система сама потребует
+   сменить его до доступа к заявкам (персональным данным).
 6. Проверьте `/sitemap.xml`, `/robots.txt`, отправьте их в Яндекс.Вебмастер и Google Search Console.
 
 ## Настройка через окружение (SetEnv в .htaccess)
@@ -45,6 +47,14 @@ SetEnv CONTACT_PHONE "+7 (952) 603-57-85"
 SetEnv MAX_PROFILE_URL "https://max.ru/u/код-профиля"
 SetEnv CONTACT_HOURS "Пн–Пт 08:00–18:00"
 SetEnv YANDEX_METRIKA_ID "12345678"
+SetEnv COMPANY_LEGAL_NAME "Индивидуальный предприниматель Фамилия Имя Отчество"
+SetEnv COMPANY_INN "12 цифр из ЕГРИП"
+SetEnv COMPANY_OGRNIP "15 цифр из ЕГРИП"
+SetEnv COMPANY_ADDRESS "полный адрес из ЕГРИП"
+SetEnv PRIVACY_EMAIL "privacy@ваш-домен.ru"
+SetEnv PRIVACY_OFFICER "Фамилия И.О. ответственного"
+SetEnv RKN_REGISTRY_NUMBER "номер записи в реестре операторов ПД"
+SetEnv HOSTING_PROVIDER "наименование хостинг-провайдера"
 SetEnv YANDEX_VERIFICATION "код-из-вебмастера"
 SetEnv GOOGLE_VERIFICATION "код-из-search-console"
 ```
@@ -117,3 +127,8 @@ py -3 <путь-к-claude-seo>/scripts/runtime.py run indexnow_submit.py --host 
 - **Кириллица-«крокозябры»** — файлы .php должны остаться в UTF-8 (они уже в UTF-8);
   не пересохраняйте их в Windows Notepad.
 - **Сайт белый/500** — смотрите `php-error.log` в корне; чаще всего — нет `pdo_sqlite`.
+- **500 сразу после загрузки .htaccess** — некоторые хостинги запрещают директиву `Options`.
+  Удалите строки `Options -Indexes` в `.htaccess`, `data/.htaccess`, `uploads/.htaccess`
+  (закрытие листинга каталогов обычно уже включено провайдером).
+- **Юридические документы и аудит** — папка `LEGAL_COMPLIANCE/` (в деплой не нужна; .md и каталог
+  закрыты правилами .htaccess).

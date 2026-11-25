@@ -37,7 +37,7 @@ RewriteRule ^ https://vashpodemnik61.ru%{REQUEST_URI} [R=301,L]
   Header set Referrer-Policy "strict-origin-when-cross-origin"
   Header set Permissions-Policy "camera=(), microphone=(), geolocation=()"
   Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
-  # CSP: same-origin + Яндекс.Метрика / Google Tag (если владелец их включит через SetEnv).
+  # CSP: same-origin + только Яндекс.Метрика (Google Analytics/GTM не используются).
   # 'unsafe-inline' для script/style нужен инлайн-скриптам (speculationrules, инициализация счётчиков)
   # и inline style=""; внешние чужие origins не разрешены. upgrade-insecure-requests НЕ ставим,
   # иначе ломается http:// локальное превью.
