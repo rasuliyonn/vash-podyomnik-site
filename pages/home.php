@@ -112,6 +112,7 @@ page_start(
       <div class="object-list">
         <?php foreach ($c['object_section']['items'] as $i => $item): ?>
         <div>
+          <span aria-hidden="true"><?= str_pad((string) ($i + 1), 2, '0', STR_PAD_LEFT) ?></span>
           <p><?= e($item) ?></p>
         </div>
         <?php endforeach; ?>
@@ -197,6 +198,7 @@ page_start(
       <?php foreach ($c['faq']['items'] as $i => $item): ?>
       <article<?= $i === 0 ? ' class="open"' : '' ?>>
         <button type="button" aria-expanded="<?= $i === 0 ? 'true' : 'false' ?>">
+          <span aria-hidden="true"><?= str_pad((string) ($i + 1), 2, '0', STR_PAD_LEFT) ?></span>
           <b><?= e($item['q']) ?></b>
           <i aria-hidden="true"><?= $i === 0 ? '−' : '+' ?></i>
         </button>

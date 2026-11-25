@@ -118,6 +118,30 @@ html {
   margin-bottom: 0;
 }
 
+/* ── Сравнение типов: первая колонка остаётся на экране при прокрутке ────
+   Таблица шире телефона (min-width: 760px). Без закреплённой первой
+   колонки при горизонтальной прокрутке теряется, какой тип в строке. */
+
+@media (max-width: 900px) {
+  .compare-table th:first-child,
+  .compare-table td:first-child {
+    background: var(--black, #0b0d0d);
+    box-shadow: 10px 0 12px -10px rgba(0, 0, 0, 0.9);
+    left: 0;
+    position: sticky;
+    z-index: 2;
+  }
+
+  .compare-table thead th:first-child {
+    background: var(--panel-2, #1d2121);
+    z-index: 3;
+  }
+
+  .compare-table tbody tr:nth-child(even) td:first-child {
+    background: #0d0f0f;
+  }
+}
+
 /* ── Юридические страницы и карточки оборудования: хлебные крошки
       больше не прячутся под абсолютной шапкой (72/74px). ──────────────── */
 
