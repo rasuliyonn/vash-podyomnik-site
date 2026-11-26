@@ -204,8 +204,9 @@ function render_cookie_banner(): void
 {
     $state = consent_state();
     $hidden = $state['set'] ? ' hidden' : '';
+    $ymId = YANDEX_METRIKA_ID !== '' ? (string) (int) YANDEX_METRIKA_ID : '';
     ?>
-    <div class="cookie-notice" id="cookieNotice" role="dialog" aria-modal="false" aria-labelledby="cookieNoticeTitle" aria-describedby="cookieNoticeText" data-analytics="<?= $state['analytics'] ? '1' : '0' ?>"<?= $hidden ?>>
+    <div class="cookie-notice" id="cookieNotice" role="dialog" aria-modal="false" aria-labelledby="cookieNoticeTitle" aria-describedby="cookieNoticeText" data-analytics="<?= $state['analytics'] ? '1' : '0' ?>" data-ym-id="<?= e($ymId) ?>"<?= $hidden ?>>
       <div class="cookie-notice-body">
         <p class="cookie-notice-title" id="cookieNoticeTitle">Файлы cookie</p>
         <p id="cookieNoticeText">Необходимые файлы cookie обеспечивают работу сайта. Аналитические cookie (Яндекс.Метрика) помогают понять, как используется сайт, и включаются только с вашего согласия. Подробнее — в <a href="/cookies">Политике использования cookie</a>.</p>
@@ -280,6 +281,7 @@ function page_start(string $title, string $description, string $canonicalPath, a
 <?php if (YANDEX_VERIFICATION !== ''): ?><meta name="yandex-verification" content="<?= e(YANDEX_VERIFICATION) ?>"><?php endif; ?>
 <?php if (GOOGLE_VERIFICATION !== ''): ?><meta name="google-site-verification" content="<?= e(GOOGLE_VERIFICATION) ?>"><?php endif; ?>
 <link rel="alternate" type="application/rss+xml" title="Блог «Ваш Подъёмник»" href="<?= abs_url('/blog/rss.xml') ?>">
+<link rel="llms-txt" href="<?= abs_url('/llms.txt') ?>">
 <?php
     echo jsonld_script(organization_jsonld());
     echo jsonld_script(website_jsonld());

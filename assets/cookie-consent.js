@@ -46,7 +46,40 @@
     }
   }
 
+  function loadMetrika(ymId) {
+    var id = parseInt(ymId, 10);
+    if (!id || window.ym) return;
+    (function (m, e, t, r, i, k, a) {
+      m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments); };
+      m[i].l = 1 * new Date();
+      k = e.createElement(t);
+      a = e.getElementsByTagName(t)[0];
+      k.async = 1;
+      k.src = r;
+      a.parentNode.insertBefore(k, a);
+    })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js', 'ym');
+    window.ym(id, 'init', {
+      clickmap: true,
+      trackLinks: true,
+      accurateTrackBounce: true,
+      anonymizeIP: true,
+      referrer: document.referrer,
+      url: window.location.href
+    });
+  }
+
+  function hideNotice() {
+    notice.hidden = true;
+    notice.setAttribute('hidden', '');
+    if (settings) settings.hidden = true;
+    if (save) save.hidden = true;
+    if (toggle) toggle.setAttribute('aria-expanded', 'false');
+    if (acceptAll) acceptAll.hidden = false;
+    if (acceptNecessary) acceptNecessary.hidden = false;
+  }
+
   function write(analytics) {
+    var prevAnalytics = state().analytics;
     var payload = {
       v: 1,
       necessary: true,
@@ -59,7 +92,19 @@
       '; path=/; max-age=' + MAX_AGE + '; SameSite=Lax';
     if (window.location.protocol === 'https:') attrs += '; Secure';
     document.cookie = attrs;
-    window.location.reload();
+    notice.setAttribute('data-analytics', analytics ? '1' : '0');
+    hideNotice();
+
+    // При отзыве ранее данного согласия перезагружаем страницу, чтобы остановить счётчик.
+    // При первом согласии подключаем Яндекс.Метрику динамически без reload, сохраняя поисковый referrer.
+    if (prevAnalytics && !analytics) {
+      window.location.reload();
+      return;
+    }
+    if (analytics) {
+      var ymId = notice.getAttribute('data-ym-id') || '';
+      if (ymId) loadMetrika(ymId);
+    }
   }
 
   function showNotice(expanded) {

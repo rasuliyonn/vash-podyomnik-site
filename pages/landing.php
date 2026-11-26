@@ -22,6 +22,9 @@ $jsonld = [
     breadcrumb_jsonld($crumbs),
     service_jsonld($page['service']['name'], $page['service']['description'], $page['path'], $area),
 ];
+if (!empty($page['faq'])) {
+    $jsonld[] = faq_jsonld($page['faq']);
+}
 
 page_start($page['title'], $page['description'], $page['path'], ['jsonld' => $jsonld]);
 

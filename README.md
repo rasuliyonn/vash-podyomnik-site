@@ -82,13 +82,10 @@ OG-обложка пересоздаётся: `python scripts/render-brand-pngs.
 
 Фото из `works/` оптимизируются скриптом `python scripts/works-optimize.py` (ресайз до 1920px, progressive JPEG q78, WebP, превью `-480` для srcset, обновляет `lib/works_image_meta.php`). После добавления новых фото в `/upravlenie/works` прогоните скрипт ещё раз и закоммитьте `works/*.webp`, `works/*-480.*` и `lib/works_image_meta.php`.
 
-После деплоя отправьте URL-ы в IndexNow (файл ключа `1c3fddc1f0b4408442f6c2e4f3f6f662.txt` лежит в корне сайта):
+После деплоя отправьте все URL сайта в IndexNow (Яндекс, Bing, api.indexnow.org; файл ключа `1c3fddc1f0b4408442f6c2e4f3f6f662.txt` лежит в корне сайта):
 
-```
-py -3 <путь-к-claude-seo>/scripts/runtime.py run indexnow_submit.py --host vashpodemnik61.ru \
-  --key 1c3fddc1f0b4408442f6c2e4f3f6f662 \
-  --key-location https://vashpodemnik61.ru/1c3fddc1f0b4408442f6c2e4f3f6f662.txt \
-  --urls-file seo-audit-2026-11-18/urls.txt
+```bash
+php scripts/indexnow-submit.php
 ```
 
 Отчёт о состоянии: полный SEO-аудит от 18.11.2026 с планом внедрения — `C:\Users\Max\Desktop\seo-audit-2026-11-18\audit-report.md` (лежит вне репозитория, в деплой не попадёт).

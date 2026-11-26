@@ -14,14 +14,15 @@ require_once __DIR__ . '/../lib/blog.php';
 $c = site_content();
 $works = works_list();
 $worksCount = count($works);
+$topArticles = blog_top_articles();
 
 $jsonld = [
     faq_jsonld($c['faq']['items']),
 ];
 
 page_start(
-    'Грузовые подъёмники и лифты под ваш объект',
-    '«Ваш Подъёмник» — производство, проектирование и монтаж грузовых подъёмников и лифтов под ваш объект. Доставка по всей России. От 5 рабочих дней на производство, цена фиксируется в договоре.',
+    'Грузовые подъёмники и лифты от производителя в Ростове-на-Дону — монтаж по РФ',
+    '«Ваш Подъёмник» — производство, проектирование и монтаж грузовых подъёмников и лифтов под ваш объект в Ростове-на-Дону и по всей России. От 5 рабочих дней, цена фиксируется в договоре.',
     '/',
     ['jsonld' => $jsonld]
 );
@@ -96,6 +97,8 @@ page_start(
     <div class="section-more-links">
       <a class="text-link" href="/oborudovanie">Каталог оборудования и сравнение типов<span aria-hidden="true"> →</span></a>
       <a class="text-link" href="/gruzovye-podemniki-po-proektu">Подъёмник по индивидуальному проекту<span aria-hidden="true"> →</span></a>
+      <a class="text-link" href="/montazh-gruzovogo-podemnika">Монтаж под ключ<span aria-hidden="true"> →</span></a>
+      <a class="text-link" href="/rostov-na-donu">Производство в Ростове-на-Дону<span aria-hidden="true"> →</span></a>
     </div>
   </section>
 
@@ -211,6 +214,27 @@ page_start(
       <a class="text-link" href="/voprosy">Все 28 вопросов и ответов<span aria-hidden="true"> →</span></a>
     </div>
   </section>
+
+  <?php if ($topArticles): ?>
+  <section class="top-articles" id="top-articles">
+    <div class="top-articles-head">
+      <h2 class="top-articles-heading">ТОП СТАТЕЙ</h2>
+    </div>
+    <div class="top-articles-grid">
+      <?php foreach ($topArticles as $i => $a): ?>
+      <a class="top-article" href="/blog/<?= e($a['slug']) ?>" aria-label="Топ статья: <?= e($a['title']) ?>">
+        <span class="top-article-cat"><?= e($a['category'] ?? 'Гайды') ?></span>
+        <b class="top-article-title"><?= e($a['title']) ?></b>
+        <p class="top-article-lead"><?= e($a['description']) ?></p>
+        <span class="top-article-meta"><?= e($a['date']) ?> · <?= (int) ($a['readMin'] ?? 8) ?> мин чтения</span>
+      </a>
+      <?php endforeach; ?>
+    </div>
+    <div class="section-more">
+      <a class="text-link" href="/blog">Полный список статей блога<span aria-hidden="true"> →</span></a>
+    </div>
+  </section>
+  <?php endif; ?>
 
 </main>
 <?php page_end(); ?>

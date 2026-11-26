@@ -10,17 +10,19 @@ require_once __DIR__ . '/../lib/render.php';
 require_once __DIR__ . '/../lib/blog.php';
 
 $tops = blog_top_articles();
+$topUrls = array_map(fn($a) => '/blog/' . $a['slug'], $tops);
 
 $jsonld = [
     breadcrumb_jsonld([
         ['name' => 'Главная', 'path' => '/'],
         ['name' => 'ТОП СТАТЕЙ', 'path' => '/top-articles'],
     ]),
+    itemlist_jsonld('Топ статей блога «Ваш Подъёмник»', $topUrls),
 ];
 
 page_start(
-    'ТОП СТАТЕЙ',
-    'Статьи-флаги «ТОП СТАТЕЙ» сайта «Ваш Подъёмник» — выбор подъёмника, цены, сроки 5–60 дней, ТР ТС 011/2011, модернизация и монтаж.',
+    'ТОП СТАТЕЙ о выборе, стоимости и монтаже грузовых подъёмников',
+    'Ключевые статьи «Ваш Подъёмник» — выбор подъёмника, цены, сроки 5–60 дней, ТР ТС 011/2011, модернизация и монтаж.',
     '/top-articles',
     ['jsonld' => $jsonld]
 );
@@ -31,8 +33,7 @@ page_start(
   </nav>
 
   <div class="top-articles-head">
-
-    <h2 class="top-articles-heading">ТОП СТАТЕЙ</h2>
+    <h1 class="top-articles-heading">ТОП СТАТЕЙ</h1>
   </div>
 
   <div class="top-articles-grid">

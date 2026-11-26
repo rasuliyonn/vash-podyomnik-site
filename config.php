@@ -76,7 +76,7 @@ define('WORKS_DIR', __DIR__ . '/works');
 define('ARTICLES_DIR', __DIR__ . '/lib/articles');
 
 // Верификация поисковиков (мета-теги в <head> появятся, только если заданы)
-define('YANDEX_VERIFICATION', getenv('YANDEX_VERIFICATION') ?: '');
+define('YANDEX_VERIFICATION', getenv('YANDEX_VERIFICATION') ?: '4b931ebc5feefeb9');
 define('GOOGLE_VERIFICATION', getenv('GOOGLE_VERIFICATION') ?: '');
 
 // Счётчик Яндекс.Метрики (если пусто — ничего не выводится). Загружается только

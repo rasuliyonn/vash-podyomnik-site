@@ -1,56 +1,81 @@
 # robots.txt — «Ваш Подъёмник»
-# Служебный каталог /data закрыт. Админку НЕ закрываем Disallow: иначе поисковик
-# не увидит meta/X-Robots-Tag noindex на её страницах и URL может попасть в индекс
-# без описания. Админка закрыта noindex (meta + заголовок .htaccess) — этого достаточно.
-# Ниже — явные правила для ответных ИИ-краулеров (GEO). Content-Signal задаёт
-# предпочтение: поиск и ответы (ai-input) — да, обучение моделей (ai-train) — нет.
-# Content-Signal — это сигнал (Cloudflare Content Signals Policy), не
-# принудительное ограничение; Google его не учитывает.
+# Служебный каталог /data закрыт во всех секциях User-agent (по RFC 9309
+# специфичная секция User-agent заменяет секцию *, а не наследует её).
+# Админку /upravlenie НЕ закрываем через Disallow: она отдаёт заголовок
+# X-Robots-Tag: noindex, nofollow, который робот должен прочитать.
 
 User-agent: *
-Content-Signal: search=yes, ai-input=yes, ai-train=no
+Allow: /
+Disallow: /data
+Clean-param: utm_source&utm_medium&utm_campaign&utm_content&utm_term&yclid&gclid&_openstat
+
+# Поисковые роботы Яндекса и Яндекс Нейро / Алиса
+User-agent: Yandex
+Allow: /
+Disallow: /data
+Clean-param: utm_source&utm_medium&utm_campaign&utm_content&utm_term&yclid&gclid&_openstat
+
+User-agent: YandexBot
 Allow: /
 Disallow: /data
 
-# Ответные ИИ-краулеры (поиск и ответы) — разрешаем явно
-User-agent: OAI-SearchBot
-Content-Signal: search=yes, ai-input=yes, ai-train=no
+User-agent: YandexAdditional
 Allow: /
+Disallow: /data
+
+User-agent: YandexAdditionalBot
+Allow: /
+Disallow: /data
+
+# Google и Google AI Overviews / Gemini
+User-agent: Googlebot
+Allow: /
+Disallow: /data
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /data
+
+# Bing (основной индекс для ChatGPT Search, Microsoft Copilot, DuckDuckGo)
+User-agent: Bingbot
+Allow: /
+Disallow: /data
+
+# ИИ-поисковики и ассистенты (OpenAI / ChatGPT, Perplexity, Claude, Apple)
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /data
 
 User-agent: ChatGPT-User
-Content-Signal: search=yes, ai-input=yes, ai-train=no
 Allow: /
+Disallow: /data
+
+User-agent: GPTBot
+Allow: /
+Disallow: /data
 
 User-agent: PerplexityBot
-Content-Signal: search=yes, ai-input=yes, ai-train=no
 Allow: /
+Disallow: /data
 
 User-agent: ClaudeBot
-Content-Signal: search=yes, ai-input=yes, ai-train=no
 Allow: /
+Disallow: /data
 
 User-agent: Claude-SearchBot
-Content-Signal: search=yes, ai-input=yes, ai-train=no
 Allow: /
+Disallow: /data
+
+User-agent: Applebot
+Allow: /
+Disallow: /data
+
+User-agent: Applebot-Extended
+Allow: /
+Disallow: /data
 
 User-agent: Amazonbot
-Content-Signal: search=yes, ai-input=yes, ai-train=no
 Allow: /
-
-User-agent: YandexBot
-Content-Signal: search=yes, ai-input=yes, ai-train=no
-Allow: /
-
-User-agent: Yandex
-Content-Signal: search=yes, ai-input=yes, ai-train=no
-Allow: /
-
-# Чтобы закрыть сайт от обучающих краулеров, добавьте:
-# User-agent: GPTBot
-# Disallow: /
-# User-agent: Google-Extended
-# Disallow: /
-# User-agent: CCBot
-# Disallow: /
+Disallow: /data
 
 Sitemap: https://vashpodemnik61.ru/sitemap.xml

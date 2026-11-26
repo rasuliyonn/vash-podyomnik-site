@@ -92,7 +92,7 @@ page_start(
   <?php endif; ?>
 
   <div class="related-articles">
-    <h2>По типу оборудования</h2>
+    <h2>По типу оборудования и услугам</h2>
     <ul>
       <li><a href="/equipment/shaftnye">Шахтные подъёмники</a></li>
       <li><a href="/equipment/konsolnye">Консольные подъёмники</a></li>
@@ -100,6 +100,9 @@ page_start(
       <li><a href="/equipment/kottedzhnye">Коттеджные лифты</a></li>
       <li><a href="/equipment/platformy">Грузовые платформы</a></li>
       <li><a href="/oborudovanie">Все типы оборудования</a></li>
+      <li><a href="/gruzovye-podemniki-po-proektu">Подъёмник по индивидуальному проекту</a></li>
+      <li><a href="/montazh-gruzovogo-podemnika">Монтаж грузового подъёмника под ключ</a></li>
+      <li><a href="/rostov-na-donu">Грузовые подъёмники в Ростове-на-Дону</a></li>
     </ul>
   </div>
 
